@@ -8,6 +8,10 @@ namespace DataHoarder_DL.Models
 {
     class Module
     {
-
+        string Name;
+        string DisplayName;
+        string Match;
+        bool IsSilent;
+        string BinPath;
     }
 }

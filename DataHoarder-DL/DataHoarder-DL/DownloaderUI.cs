@@ -17,5 +17,16 @@ namespace DataHoarder_DL
             InitializeComponent();
         }
 
+        private void txtDLDir_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnIGScrape_Click(object sender, EventArgs e)
+        {
+            Controllers.InstagramController ig = new Controllers.InstagramController(txtIGUser.Text, txtIGPass.Text);
+            ig.FetchData(txtIGScrapeAcct.Text);
+            //FileOperations.Json.ParseMetadata("test");
+        }
     }
 }
