@@ -28,5 +28,30 @@ namespace DataHoarder_DL
             ig.FetchData(txtIGScrapeAcct.Text);
             //FileOperations.Json.ParseMetadata("test");
         }
+
+        private void txtIGScrapeAcct_TextChanged(object sender, EventArgs e)
+        {
+            Globals.Settings.InstagramSettings.LastScrapedUser = txtIGScrapeAcct.Text;
+            Globals.Settings.Save();
+        }
+
+        private void txtIGUser_TextChanged(object sender, EventArgs e)
+        {
+            Globals.Settings.InstagramSettings.IGUsername = txtIGUser.Text;
+            Globals.Settings.Save();
+        }
+
+        private void txtIGPass_TextChanged(object sender, EventArgs e)
+        {
+            Globals.Settings.InstagramSettings.IGPass = txtIGPass.Text;
+            Globals.Settings.Save();
+        }
+
+        private void DownloaderUI_Load(object sender, EventArgs e)
+        {
+            txtIGPass.Text = Globals.Settings.InstagramSettings.IGPass;
+            txtIGUser.Text = Globals.Settings.InstagramSettings.IGUsername;
+            txtIGScrapeAcct.Text = Globals.Settings.InstagramSettings.LastScrapedUser;
+        }
     }
 }

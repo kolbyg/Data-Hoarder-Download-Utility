@@ -38,19 +38,19 @@ namespace DataHoarder_DL
             this.lsvQueue = new System.Windows.Forms.ListView();
             this.chkAllowOverwrite = new System.Windows.Forms.CheckBox();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.btnIGScrape = new System.Windows.Forms.Button();
+            this.txtIGPass = new System.Windows.Forms.TextBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.txtIGUser = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.txtIGScrapeAcct = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.cmbDLSource = new System.Windows.Forms.ComboBox();
             this.btnAddToQueue = new System.Windows.Forms.Button();
             this.txtDLURL = new System.Windows.Forms.TextBox();
-            this.btnIGScrape = new System.Windows.Forms.Button();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.txtIGScrapeAcct = new System.Windows.Forms.TextBox();
-            this.txtIGUser = new System.Windows.Forms.TextBox();
-            this.label5 = new System.Windows.Forms.Label();
-            this.txtIGPass = new System.Windows.Forms.TextBox();
-            this.label6 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -143,6 +143,83 @@ namespace DataHoarder_DL
             this.panel1.Size = new System.Drawing.Size(1039, 554);
             this.panel1.TabIndex = 9;
             // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.btnIGScrape);
+            this.groupBox1.Controls.Add(this.txtIGPass);
+            this.groupBox1.Controls.Add(this.label6);
+            this.groupBox1.Controls.Add(this.txtIGUser);
+            this.groupBox1.Controls.Add(this.label5);
+            this.groupBox1.Controls.Add(this.txtIGScrapeAcct);
+            this.groupBox1.Controls.Add(this.label4);
+            this.groupBox1.Location = new System.Drawing.Point(3, 82);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(1033, 86);
+            this.groupBox1.TabIndex = 6;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Instagram";
+            // 
+            // btnIGScrape
+            // 
+            this.btnIGScrape.Location = new System.Drawing.Point(612, 36);
+            this.btnIGScrape.Name = "btnIGScrape";
+            this.btnIGScrape.Size = new System.Drawing.Size(119, 23);
+            this.btnIGScrape.TabIndex = 10;
+            this.btnIGScrape.Text = "Begin Scrape";
+            this.btnIGScrape.UseVisualStyleBackColor = true;
+            this.btnIGScrape.Click += new System.EventHandler(this.btnIGScrape_Click);
+            // 
+            // txtIGPass
+            // 
+            this.txtIGPass.Location = new System.Drawing.Point(410, 37);
+            this.txtIGPass.Name = "txtIGPass";
+            this.txtIGPass.Size = new System.Drawing.Size(196, 23);
+            this.txtIGPass.TabIndex = 10;
+            this.txtIGPass.TextChanged += new System.EventHandler(this.txtIGPass_TextChanged);
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(410, 19);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(57, 15);
+            this.label6.TabIndex = 11;
+            this.label6.Text = "Password";
+            // 
+            // txtIGUser
+            // 
+            this.txtIGUser.Location = new System.Drawing.Point(208, 37);
+            this.txtIGUser.Name = "txtIGUser";
+            this.txtIGUser.Size = new System.Drawing.Size(196, 23);
+            this.txtIGUser.TabIndex = 8;
+            this.txtIGUser.TextChanged += new System.EventHandler(this.txtIGUser_TextChanged);
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(208, 19);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(60, 15);
+            this.label5.TabIndex = 9;
+            this.label5.Text = "Username";
+            // 
+            // txtIGScrapeAcct
+            // 
+            this.txtIGScrapeAcct.Location = new System.Drawing.Point(6, 37);
+            this.txtIGScrapeAcct.Name = "txtIGScrapeAcct";
+            this.txtIGScrapeAcct.Size = new System.Drawing.Size(196, 23);
+            this.txtIGScrapeAcct.TabIndex = 7;
+            this.txtIGScrapeAcct.TextChanged += new System.EventHandler(this.txtIGScrapeAcct_TextChanged);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(6, 19);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(87, 15);
+            this.label4.TabIndex = 7;
+            this.label4.Text = "Account Name";
+            // 
             // label3
             // 
             this.label3.AutoSize = true;
@@ -185,80 +262,6 @@ namespace DataHoarder_DL
             this.txtDLURL.Size = new System.Drawing.Size(627, 23);
             this.txtDLURL.TabIndex = 0;
             // 
-            // btnIGScrape
-            // 
-            this.btnIGScrape.Location = new System.Drawing.Point(612, 36);
-            this.btnIGScrape.Name = "btnIGScrape";
-            this.btnIGScrape.Size = new System.Drawing.Size(119, 23);
-            this.btnIGScrape.TabIndex = 10;
-            this.btnIGScrape.Text = "Begin Scrape";
-            this.btnIGScrape.UseVisualStyleBackColor = true;
-            this.btnIGScrape.Click += new System.EventHandler(this.btnIGScrape_Click);
-            // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.btnIGScrape);
-            this.groupBox1.Controls.Add(this.txtIGPass);
-            this.groupBox1.Controls.Add(this.label6);
-            this.groupBox1.Controls.Add(this.txtIGUser);
-            this.groupBox1.Controls.Add(this.label5);
-            this.groupBox1.Controls.Add(this.txtIGScrapeAcct);
-            this.groupBox1.Controls.Add(this.label4);
-            this.groupBox1.Location = new System.Drawing.Point(3, 82);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(1033, 86);
-            this.groupBox1.TabIndex = 6;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Instagram";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(6, 19);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(87, 15);
-            this.label4.TabIndex = 7;
-            this.label4.Text = "Account Name";
-            // 
-            // txtIGScrapeAcct
-            // 
-            this.txtIGScrapeAcct.Location = new System.Drawing.Point(6, 37);
-            this.txtIGScrapeAcct.Name = "txtIGScrapeAcct";
-            this.txtIGScrapeAcct.Size = new System.Drawing.Size(196, 23);
-            this.txtIGScrapeAcct.TabIndex = 7;
-            // 
-            // txtIGUser
-            // 
-            this.txtIGUser.Location = new System.Drawing.Point(208, 37);
-            this.txtIGUser.Name = "txtIGUser";
-            this.txtIGUser.Size = new System.Drawing.Size(196, 23);
-            this.txtIGUser.TabIndex = 8;
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(208, 19);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(60, 15);
-            this.label5.TabIndex = 9;
-            this.label5.Text = "Username";
-            // 
-            // txtIGPass
-            // 
-            this.txtIGPass.Location = new System.Drawing.Point(410, 37);
-            this.txtIGPass.Name = "txtIGPass";
-            this.txtIGPass.Size = new System.Drawing.Size(196, 23);
-            this.txtIGPass.TabIndex = 10;
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(410, 19);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(57, 15);
-            this.label6.TabIndex = 11;
-            this.label6.Text = "Password";
-            // 
             // DownloaderUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -275,6 +278,7 @@ namespace DataHoarder_DL
             this.Controls.Add(this.txtDLDir);
             this.Name = "DownloaderUI";
             this.Text = "DataHoarder Downloader";
+            this.Load += new System.EventHandler(this.DownloaderUI_Load);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.groupBox1.ResumeLayout(false);

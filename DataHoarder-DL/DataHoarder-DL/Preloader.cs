@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
 
 namespace DataHoarder_DL
 {
@@ -22,12 +23,22 @@ namespace DataHoarder_DL
             //LoadThings
             CheckUpdates();
             LoadModules();
+            LoadSettings();
             this.Close();
 
+        }
+        private void LoadSettings()
+        {
+            if (!File.Exists(Globals.SettingsPath))
+            {
+                File.WriteAllText(Globals.SettingsPath,FileOperations.Json.SerializeSettings(new Settings()));
+            }
+            Globals.Settings = FileOperations.Json.ParseSettings(File.ReadAllText(Globals.SettingsPath));
         }
         private void LoadModules()
         {
             //load module info from jsons
+
         }
         private void CheckUpdates()
         {

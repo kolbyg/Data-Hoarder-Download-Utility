@@ -38,5 +38,7 @@ namespace DataHoarder_DL.Models.Instagram
         public List<GraphImage> GraphImages;
         [JsonProperty]
         public List<GraphStory> GraphStories;
+        [JsonProperty]
+        public GraphProfileInfo GraphProfileInfo;
     }
 }

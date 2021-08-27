@@ -32,11 +32,41 @@ namespace DataHoarder_DL.FileOperations
                 string json = JsonConvert.SerializeObject(data, Formatting.Indented);
                 //File.WriteAllText(path, json);
                 return json;
-           // }
+            // }
             //catch (Exception ex)
-           // {
-                //Utilities.Utilities.Logger.Error(ex.Message);
-                //Utilities.Utilities.Logger.Debug(ex.InnerException);
+            // {
+            //Utilities.Utilities.Logger.Error(ex.Message);
+            //Utilities.Utilities.Logger.Debug(ex.InnerException);
+            //    return false;
+            //}
+        }
+        public static Settings ParseSettings(string JsonData)
+        {
+            //try
+            // {
+            var _settings = new JsonSerializerSettings() { };
+            var _data = JsonConvert.DeserializeObject<Settings>(JsonData, _settings);
+            return _data;
+            // }
+            ////catch (Exception ex)
+            //
+            //Utilities.Utilities.Logger.Error(ex.Message);
+            //Utilities.Utilities.Logger.Debug(ex.InnerException);
+            return null;
+            // }
+        }
+        public static string SerializeSettings(Settings data)
+        {
+            //try
+            // {
+            string json = JsonConvert.SerializeObject(data, Formatting.Indented);
+            //File.WriteAllText(path, json);
+            return json;
+            // }
+            //catch (Exception ex)
+            // {
+            //Utilities.Utilities.Logger.Error(ex.Message);
+            //Utilities.Utilities.Logger.Debug(ex.InnerException);
             //    return false;
             //}
         }
