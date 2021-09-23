@@ -24,9 +24,8 @@ namespace DataHoarder_DL
 
         private void btnIGScrape_Click(object sender, EventArgs e)
         {
-            Controllers.InstagramController ig = new Controllers.InstagramController(txtIGUser.Text, txtIGPass.Text);
-            ig.FetchData(txtIGScrapeAcct.Text);
-            //FileOperations.Json.ParseMetadata("test");
+            Controllers.InstagramController ig = new Controllers.InstagramController(txtIGUser.Text, txtIGPass.Text, txtDLDir.Text);
+            ig.FetchData(txtIGScrapeAcct.Text, Convert.ToInt32(nudIGMaxToScrape.Value));
         }
 
         private void txtIGScrapeAcct_TextChanged(object sender, EventArgs e)
@@ -52,6 +51,13 @@ namespace DataHoarder_DL
             txtIGPass.Text = Globals.Settings.InstagramSettings.IGPass;
             txtIGUser.Text = Globals.Settings.InstagramSettings.IGUsername;
             txtIGScrapeAcct.Text = Globals.Settings.InstagramSettings.LastScrapedUser;
+            txtDLDir.Text = Environment.CurrentDirectory + "\\Casts";
+        }
+
+        private void ptnIGParseOnly_Click(object sender, EventArgs e)
+        {
+            Controllers.InstagramController ig = new Controllers.InstagramController(txtIGUser.Text, txtIGPass.Text, txtDLDir.Text);
+            ig.ParseOnly(txtIGScrapeAcct.Text);
         }
     }
 }
