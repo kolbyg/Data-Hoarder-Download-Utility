@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using NLog;
 
 namespace DataHoarder_DL
 {
@@ -57,7 +58,13 @@ namespace DataHoarder_DL
         private void ptnIGParseOnly_Click(object sender, EventArgs e)
         {
             Controllers.InstagramController ig = new Controllers.InstagramController(txtIGUser.Text, txtIGPass.Text, txtDLDir.Text);
-            ig.ParseOnly(txtIGScrapeAcct.Text);
+            ig.Parse(txtIGScrapeAcct.Text);
+        }
+
+        private void btnIGValidate_Click(object sender, EventArgs e)
+        {
+            Controllers.InstagramController ig = new Controllers.InstagramController(txtIGUser.Text, txtIGPass.Text, txtDLDir.Text);
+            ig.Validate();
         }
     }
 }

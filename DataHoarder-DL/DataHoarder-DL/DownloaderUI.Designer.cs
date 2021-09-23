@@ -32,7 +32,6 @@ namespace DataHoarder_DL
             this.txtDLDir = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.btnDLDirBrowse = new System.Windows.Forms.Button();
-            this.lsvLog = new System.Windows.Forms.ListView();
             this.chkVerbose = new System.Windows.Forms.CheckBox();
             this.btnProcessQueue = new System.Windows.Forms.Button();
             this.lsvQueue = new System.Windows.Forms.ListView();
@@ -48,6 +47,8 @@ namespace DataHoarder_DL
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tpageYoutube = new System.Windows.Forms.TabPage();
             this.tpageInstagram = new System.Windows.Forms.TabPage();
+            this.btnIGValidate = new System.Windows.Forms.Button();
+            this.ptnIGParseOnly = new System.Windows.Forms.Button();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -55,7 +56,7 @@ namespace DataHoarder_DL
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.chkIGMediaMetadata = new System.Windows.Forms.CheckBox();
             this.chkIGProfileMetadata = new System.Windows.Forms.CheckBox();
-            this.ptnIGParseOnly = new System.Windows.Forms.Button();
+            this.rtbLogger = new System.Windows.Forms.RichTextBox();
             this.tabControl1.SuspendLayout();
             this.tpageInstagram.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudIGMaxToScrape)).BeginInit();
@@ -87,16 +88,6 @@ namespace DataHoarder_DL
             this.btnDLDirBrowse.TabIndex = 3;
             this.btnDLDirBrowse.Text = "...";
             this.btnDLDirBrowse.UseVisualStyleBackColor = true;
-            // 
-            // lsvLog
-            // 
-            this.lsvLog.HideSelection = false;
-            this.lsvLog.Location = new System.Drawing.Point(4, 624);
-            this.lsvLog.Name = "lsvLog";
-            this.lsvLog.Size = new System.Drawing.Size(1362, 208);
-            this.lsvLog.TabIndex = 4;
-            this.lsvLog.UseCompatibleStateImageBehavior = false;
-            this.lsvLog.View = System.Windows.Forms.View.Details;
             // 
             // chkVerbose
             // 
@@ -229,6 +220,7 @@ namespace DataHoarder_DL
             // 
             // tpageInstagram
             // 
+            this.tpageInstagram.Controls.Add(this.btnIGValidate);
             this.tpageInstagram.Controls.Add(this.ptnIGParseOnly);
             this.tpageInstagram.Controls.Add(this.textBox1);
             this.tpageInstagram.Controls.Add(this.label3);
@@ -249,6 +241,26 @@ namespace DataHoarder_DL
             this.tpageInstagram.TabIndex = 0;
             this.tpageInstagram.Text = "Instagram";
             this.tpageInstagram.UseVisualStyleBackColor = true;
+            // 
+            // btnIGValidate
+            // 
+            this.btnIGValidate.Location = new System.Drawing.Point(872, 78);
+            this.btnIGValidate.Name = "btnIGValidate";
+            this.btnIGValidate.Size = new System.Drawing.Size(119, 23);
+            this.btnIGValidate.TabIndex = 19;
+            this.btnIGValidate.Text = "Validate Only";
+            this.btnIGValidate.UseVisualStyleBackColor = true;
+            this.btnIGValidate.Click += new System.EventHandler(this.btnIGValidate_Click);
+            // 
+            // ptnIGParseOnly
+            // 
+            this.ptnIGParseOnly.Location = new System.Drawing.Point(872, 49);
+            this.ptnIGParseOnly.Name = "ptnIGParseOnly";
+            this.ptnIGParseOnly.Size = new System.Drawing.Size(119, 23);
+            this.ptnIGParseOnly.TabIndex = 18;
+            this.ptnIGParseOnly.Text = "Parse Only";
+            this.ptnIGParseOnly.UseVisualStyleBackColor = true;
+            this.ptnIGParseOnly.Click += new System.EventHandler(this.ptnIGParseOnly_Click);
             // 
             // textBox1
             // 
@@ -313,28 +325,26 @@ namespace DataHoarder_DL
             this.chkIGProfileMetadata.Text = "Profile";
             this.chkIGProfileMetadata.UseVisualStyleBackColor = true;
             // 
-            // ptnIGParseOnly
+            // rtbLogger
             // 
-            this.ptnIGParseOnly.Location = new System.Drawing.Point(872, 49);
-            this.ptnIGParseOnly.Name = "ptnIGParseOnly";
-            this.ptnIGParseOnly.Size = new System.Drawing.Size(119, 23);
-            this.ptnIGParseOnly.TabIndex = 18;
-            this.ptnIGParseOnly.Text = "Parse Only";
-            this.ptnIGParseOnly.UseVisualStyleBackColor = true;
-            this.ptnIGParseOnly.Click += new System.EventHandler(this.ptnIGParseOnly_Click);
+            this.rtbLogger.Location = new System.Drawing.Point(4, 624);
+            this.rtbLogger.Name = "rtbLogger";
+            this.rtbLogger.Size = new System.Drawing.Size(1362, 210);
+            this.rtbLogger.TabIndex = 10;
+            this.rtbLogger.Text = "";
             // 
             // DownloaderUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1372, 835);
+            this.Controls.Add(this.rtbLogger);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.btnAddToQueue);
             this.Controls.Add(this.chkAllowOverwrite);
             this.Controls.Add(this.lsvQueue);
             this.Controls.Add(this.btnProcessQueue);
             this.Controls.Add(this.chkVerbose);
-            this.Controls.Add(this.lsvLog);
             this.Controls.Add(this.btnDLDirBrowse);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.txtDLDir);
@@ -357,7 +367,6 @@ namespace DataHoarder_DL
         private System.Windows.Forms.TextBox txtDLDir;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btnDLDirBrowse;
-        private System.Windows.Forms.ListView lsvLog;
         private System.Windows.Forms.CheckBox chkVerbose;
         private System.Windows.Forms.Button btnProcessQueue;
         private System.Windows.Forms.ListView lsvQueue;
@@ -381,6 +390,8 @@ namespace DataHoarder_DL
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button ptnIGParseOnly;
+        private System.Windows.Forms.Button btnIGValidate;
+        private System.Windows.Forms.RichTextBox rtbLogger;
     }
 }
 
