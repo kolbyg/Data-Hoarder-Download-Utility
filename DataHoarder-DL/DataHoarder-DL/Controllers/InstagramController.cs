@@ -91,10 +91,10 @@ namespace DataHoarder_DL.Controllers
         }
         public bool Validate()
         {
-            logger.Debug("Begin data validation");
+            logger.Info("Begin data validation");
             List<IGData> WorkingData = ParseExistingData();
             logger.Debug("Initializing list for missing file storage");
-            List<IGData> ToDownload;
+            List<IGData> ToDownload = null;
             if (WorkingData != null)
             {
                 logger.Debug("WorkingData was not null, validating all data");
@@ -104,10 +104,15 @@ namespace DataHoarder_DL.Controllers
             {
                 logger.Debug("WorkingData was null, skipping data validation");
             }
+            if(ToDownload != null)
+            {
+                logger.Warn("Some files failed to validate and will be downloaded.");
+            }
             return false;
         }
         public bool Parse(string username)
         {
+            logger.Info("Begin processing cached data");
             ProcessCache(username);
             return false;
         }
@@ -124,6 +129,7 @@ namespace DataHoarder_DL.Controllers
         private void ProcessCache(string username)
         {
             string CachedMetadata = $"{Cache}\\{username}.json";
+            logger.Debug("Begin processing cache from "+ CachedMetadata);
 
             //Process Directory Naming
             IGData tempdata = ParseIGData(CachedMetadata);
@@ -131,11 +137,12 @@ namespace DataHoarder_DL.Controllers
 
             //Process Media
             if (!Directory.Exists(MediaPath)) { Directory.CreateDirectory(MediaPath); }
-
+            logger.Debug("Begin processing media");
             //Process Images
             IGData queue = ParseIGData(CachedMetadata);
             if (queue.GraphImages != null)
             {
+                logger.Debug("GraphImages is not null, processing");
                 if (!Directory.Exists(MediaPath + "\\images")) { Directory.CreateDirectory(MediaPath + "\\images"); }
                 foreach (GraphImage image in queue.GraphImages)
                 {
@@ -219,12 +226,9 @@ namespace DataHoarder_DL.Controllers
             }
 
         }
-        public bool ScrapeMetadata(string username)
-        {
-            return false;
-        }
         public bool ScrapeAllData(string username, int MaxItemsToScrape)
         {
+            logger.Info($"Begin data scraping for {username}, maximum {MaxItemsToScrape} items");
             if (!Directory.Exists(Cache)) { Directory.CreateDirectory(Cache); }
             string scrapeCommand = BuildScrapeCommand(username, AuthUsername, AuthPass, Cache, TimestampPath, true, true, false, MaxItemsToScrape);
             InvokeIGScraper(scrapeCommand);
@@ -233,25 +237,41 @@ namespace DataHoarder_DL.Controllers
         private string BuildScrapeCommand(string AccountToScrape, string IGUsername, string IGPassword, string DownloadPath, string TimestampPath, bool IncludeMediaMetadata, bool IncludeProfileMetadata, bool WriteTimestampFile, int MaxItemsToScrape)
         {
             string namingTemplate = "{urlname}";
+            logger.Debug("Building scrape command");
+            logger.Debug("AccountToScrape: " + AccountToScrape);
+            logger.Debug("IGUsername: " + IGUsername);
+            logger.Debug("IGPassword: " + IGPassword);
+            logger.Debug("DownloadPath: " + DownloadPath);
+            logger.Debug("TimestampPath: " + TimestampPath);
+            logger.Debug("IncludeMediaMetadata: " + IncludeMediaMetadata);
+            logger.Debug("IncludeProfileMetadata: " + IncludeProfileMetadata);
+            logger.Debug("WriteTimestampFile: " + WriteTimestampFile);
+            logger.Debug("MaxItemsToScrape: " + MaxItemsToScrape);
+            logger.Debug("namingTemplate: " + namingTemplate);
             string scrapeCommandBase = $"app.py {AccountToScrape} -u {IGUsername} -p {IGPassword} --destination \"{DownloadPath}\" --template {namingTemplate}";
             if (IncludeMediaMetadata) {
                 scrapeCommandBase += " --media-metadata";
+                logger.Debug("Adding media metadata");
             }
             if (IncludeProfileMetadata) {
                 scrapeCommandBase += " --profile-metadata";
-                    }
+                logger.Debug("Adding profile metadata");
+            }
             if(MaxItemsToScrape != 0)
             {
                 scrapeCommandBase += $" --maximum {MaxItemsToScrape}";
+                logger.Debug("Adding max items to scrape");
             }
             if (WriteTimestampFile)
             {
                 scrapeCommandBase += $" --latest-stamps \"{TimestampPath}\\{AccountToScrape}\"";
+                logger.Debug("Adding latest stamps");
             }
             return scrapeCommandBase;
         }
         private void InvokeIGScraper(string ScrapeCommand)
         {
+            logger.Info("Invoking scraper with command: " + ScrapeCommand);
             Process p = new Process();
             p.StartInfo.Arguments = ScrapeCommand;
             p.StartInfo.WorkingDirectory = IGBinPath;
@@ -260,6 +280,7 @@ namespace DataHoarder_DL.Controllers
             p.StartInfo.RedirectStandardError = false;
             p.StartInfo.RedirectStandardOutput = false;
             p.Start();
+            logger.Debug("Waiting for scraping to complete");
             p.WaitForExit();
         }
         private void UpdatePaths(IGData Data, bool CreateDirectories = false)
@@ -304,12 +325,12 @@ namespace DataHoarder_DL.Controllers
                             DateTimeOffset dto = DateTimeOffset.FromUnixTimeSeconds(image.taken_at_timestamp);
                             if (!File.Exists(MediaPath + "\\images\\" + dto.ToString("yyyyMMdd") + "-" + fileName))
                             {
-                                logger.Info("URL from Image ID " + image.id + " is missing, adding to list.");
+                                logger.Warn("URL from Image ID " + image.id + " is missing, adding to list.");
                                 missingData.GraphImages.Add(image);
                             }
                             else
                             {
-                                logger.Info("Found image URL, skipping...");
+                                logger.Debug("Found image URL, skipping...");
                             }
                         }
                     }
@@ -327,12 +348,12 @@ namespace DataHoarder_DL.Controllers
                             DateTimeOffset dto = DateTimeOffset.FromUnixTimeSeconds(story.taken_at_timestamp);
                             if (!File.Exists(MediaPath + "\\stories\\" + dto.ToString("yyyyMMdd") + "-" + fileName))
                             {
-                                logger.Info("URL from Story ID " + story.id + " is missing, adding to list.");
+                                logger.Warn("URL from Story ID " + story.id + " is missing, adding to list.");
                                 missingData.GraphStories.Add(story);
                             }
                             else
                             {
-                                logger.Info("Found story URL, skipping...");
+                                logger.Debug("Found story URL, skipping...");
                             }
                         }
                     }
@@ -343,7 +364,7 @@ namespace DataHoarder_DL.Controllers
                     string fileName = URLtoName(curData.GraphProfileInfo.info.profile_pic_url);
                     if (!File.Exists(MediaPath + "\\profilepics\\" + fileName))
                     {
-                        logger.Info("Profile picture is missing, adding to list.");
+                        logger.Warn("Profile picture is missing, adding to list.");
                         missingData.GraphProfileInfo = curData.GraphProfileInfo;
                     }
                     else
