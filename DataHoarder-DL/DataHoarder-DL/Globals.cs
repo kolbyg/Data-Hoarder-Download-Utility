@@ -27,6 +27,23 @@ namespace DataHoarder_DL
         public string IGPass = "hunter2";
         [JsonProperty]
         public string LastScrapedUser = "donaldtrump";
+        [JsonProperty]
+        public int DefaultMaxScrape = 20;
+        [JsonProperty]
+        public List<IGFollowedUser> FollowedUsers = new List<IGFollowedUser>();
+    }
+    public class IGFollowedUser
+    {
+        [JsonProperty]
+        public string AccountName;
+        [JsonProperty]
+        public DateTime LastScraped = DateTime.UnixEpoch;
+        [JsonProperty]
+        public DateTime LastValidated = DateTime.UnixEpoch;
+        public IGFollowedUser(string Username)
+        {
+            AccountName = Username;
+        }
     }
     public class Settings
     {
@@ -36,5 +53,7 @@ namespace DataHoarder_DL
         }
         [JsonProperty]
         public InstagramSettings InstagramSettings = new InstagramSettings();
+        [JsonProperty]
+        public string RootDownloadPath = Environment.CurrentDirectory + "\\DL";
     }
 }

@@ -20,7 +20,8 @@ namespace DataHoarder_DL
 
         private void txtDLDir_TextChanged(object sender, EventArgs e)
         {
-
+            Globals.Settings.RootDownloadPath = txtDLDir.Text;
+            Globals.Settings.Save();
         }
 
         private void btnIGScrape_Click(object sender, EventArgs e)
@@ -52,7 +53,24 @@ namespace DataHoarder_DL
             txtIGPass.Text = Globals.Settings.InstagramSettings.IGPass;
             txtIGUser.Text = Globals.Settings.InstagramSettings.IGUsername;
             txtIGScrapeAcct.Text = Globals.Settings.InstagramSettings.LastScrapedUser;
-            txtDLDir.Text = Environment.CurrentDirectory + "\\Casts";
+            txtDLDir.Text = Globals.Settings.RootDownloadPath;
+            IGPopulateFollowed();
+        }
+
+        private void IGPopulateFollowed()
+        {
+            if (Globals.Settings.InstagramSettings.FollowedUsers == null)
+                return;
+            lsvIGFollowed.HeaderStyle = ColumnHeaderStyle.Nonclickable;
+            lsvIGFollowed.Items.Clear();
+            foreach(IGFollowedUser user in Globals.Settings.InstagramSettings.FollowedUsers)
+            {
+                ListViewItem item = new ListViewItem(user.AccountName);
+                item.SubItems.Add(user.LastScraped.ToString());
+                Controllers.InstagramController ig = new Controllers.InstagramController(txtIGUser.Text, txtIGPass.Text, txtDLDir.Text);
+                item.SubItems.Add(ig.GetItemCount(user.AccountName).ToString());
+                lsvIGFollowed.Items.Add(item);
+            }
         }
 
         private void ptnIGParseOnly_Click(object sender, EventArgs e)
@@ -65,6 +83,35 @@ namespace DataHoarder_DL
         {
             Controllers.InstagramController ig = new Controllers.InstagramController(txtIGUser.Text, txtIGPass.Text, txtDLDir.Text);
             ig.Validate();
+        }
+
+        private void btnIGAddUser_Click(object sender, EventArgs e)
+        {
+            IGFollowedUser newUser = new IGFollowedUser(txtIGScrapeAcct.Text);
+            if (Globals.Settings.InstagramSettings.FollowedUsers.Any(p => p.AccountName == newUser.AccountName))
+                MessageBox.Show("User already exists and will not be added");
+            else
+                Globals.Settings.InstagramSettings.FollowedUsers.Add(newUser);
+            IGPopulateFollowed();
+            Globals.Settings.Save();
+        }
+
+        private void btnIGRemoveUser_Click(object sender, EventArgs e)
+        {
+            if (lsvIGFollowed.SelectedItems != null)
+            {
+                foreach (ListViewItem item in lsvIGFollowed.SelectedItems)
+                {
+                    DialogResult result = MessageBox.Show($"Are you sure you want to remove {item.Text} from the followed list?\r\nDownloaded files will not be deleted.", "Confirm", MessageBoxButtons.YesNo);
+                    if (result == DialogResult.Yes)
+                    {
+                        IGFollowedUser user = Globals.Settings.InstagramSettings.FollowedUsers.Find(x => x.AccountName == item.Text);
+                        Globals.Settings.InstagramSettings.FollowedUsers.Remove(user);
+                    }
+                }
+            }
+            IGPopulateFollowed();
+            Globals.Settings.Save();
         }
     }
 }

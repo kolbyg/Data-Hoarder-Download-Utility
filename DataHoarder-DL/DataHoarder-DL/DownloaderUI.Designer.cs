@@ -47,20 +47,29 @@ namespace DataHoarder_DL
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tpageYoutube = new System.Windows.Forms.TabPage();
             this.tpageInstagram = new System.Windows.Forms.TabPage();
+            this.btnIGRemoveUser = new System.Windows.Forms.Button();
+            this.btnIGAddUser = new System.Windows.Forms.Button();
+            this.lsvIGFollowed = new System.Windows.Forms.ListView();
+            this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
+            this.columnHeader2 = new System.Windows.Forms.ColumnHeader();
+            this.columnHeader3 = new System.Windows.Forms.ColumnHeader();
             this.btnIGValidate = new System.Windows.Forms.Button();
             this.ptnIGParseOnly = new System.Windows.Forms.Button();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.nudIGMaxToScrape = new System.Windows.Forms.NumericUpDown();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.chkIGMediaMetadata = new System.Windows.Forms.CheckBox();
             this.chkIGProfileMetadata = new System.Windows.Forms.CheckBox();
             this.rtbLogger = new System.Windows.Forms.RichTextBox();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.button1 = new System.Windows.Forms.Button();
+            this.columnHeader4 = new System.Windows.Forms.ColumnHeader();
             this.tabControl1.SuspendLayout();
             this.tpageInstagram.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudIGMaxToScrape)).BeginInit();
             this.groupBox1.SuspendLayout();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // txtDLDir
@@ -110,10 +119,11 @@ namespace DataHoarder_DL
             // 
             // lsvQueue
             // 
+            this.lsvQueue.BackColor = System.Drawing.SystemColors.ControlDark;
             this.lsvQueue.HideSelection = false;
-            this.lsvQueue.Location = new System.Drawing.Point(1057, 12);
+            this.lsvQueue.Location = new System.Drawing.Point(1057, 27);
             this.lsvQueue.Name = "lsvQueue";
-            this.lsvQueue.Size = new System.Drawing.Size(309, 554);
+            this.lsvQueue.Size = new System.Drawing.Size(309, 539);
             this.lsvQueue.TabIndex = 7;
             this.lsvQueue.UseCompatibleStateImageBehavior = false;
             this.lsvQueue.View = System.Windows.Forms.View.List;
@@ -130,17 +140,17 @@ namespace DataHoarder_DL
             // 
             // btnIGScrape
             // 
-            this.btnIGScrape.Location = new System.Drawing.Point(872, 20);
+            this.btnIGScrape.Location = new System.Drawing.Point(701, 475);
             this.btnIGScrape.Name = "btnIGScrape";
-            this.btnIGScrape.Size = new System.Drawing.Size(119, 23);
+            this.btnIGScrape.Size = new System.Drawing.Size(158, 23);
             this.btnIGScrape.TabIndex = 10;
-            this.btnIGScrape.Text = "Begin Scrape";
+            this.btnIGScrape.Text = "Scrape Selected";
             this.btnIGScrape.UseVisualStyleBackColor = true;
             this.btnIGScrape.Click += new System.EventHandler(this.btnIGScrape_Click);
             // 
             // txtIGPass
             // 
-            this.txtIGPass.Location = new System.Drawing.Point(407, 21);
+            this.txtIGPass.Location = new System.Drawing.Point(205, 21);
             this.txtIGPass.Name = "txtIGPass";
             this.txtIGPass.Size = new System.Drawing.Size(196, 23);
             this.txtIGPass.TabIndex = 10;
@@ -149,7 +159,7 @@ namespace DataHoarder_DL
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(407, 3);
+            this.label6.Location = new System.Drawing.Point(205, 3);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(57, 15);
             this.label6.TabIndex = 11;
@@ -157,7 +167,7 @@ namespace DataHoarder_DL
             // 
             // txtIGUser
             // 
-            this.txtIGUser.Location = new System.Drawing.Point(205, 21);
+            this.txtIGUser.Location = new System.Drawing.Point(3, 21);
             this.txtIGUser.Name = "txtIGUser";
             this.txtIGUser.Size = new System.Drawing.Size(196, 23);
             this.txtIGUser.TabIndex = 8;
@@ -166,7 +176,7 @@ namespace DataHoarder_DL
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(205, 3);
+            this.label5.Location = new System.Drawing.Point(3, 3);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(60, 15);
             this.label5.TabIndex = 9;
@@ -174,7 +184,7 @@ namespace DataHoarder_DL
             // 
             // txtIGScrapeAcct
             // 
-            this.txtIGScrapeAcct.Location = new System.Drawing.Point(3, 21);
+            this.txtIGScrapeAcct.Location = new System.Drawing.Point(205, 118);
             this.txtIGScrapeAcct.Name = "txtIGScrapeAcct";
             this.txtIGScrapeAcct.Size = new System.Drawing.Size(196, 23);
             this.txtIGScrapeAcct.TabIndex = 7;
@@ -183,7 +193,7 @@ namespace DataHoarder_DL
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(3, 3);
+            this.label4.Location = new System.Drawing.Point(205, 100);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(87, 15);
             this.label4.TabIndex = 7;
@@ -202,28 +212,31 @@ namespace DataHoarder_DL
             // 
             this.tabControl1.Controls.Add(this.tpageYoutube);
             this.tabControl1.Controls.Add(this.tpageInstagram);
-            this.tabControl1.Location = new System.Drawing.Point(12, 12);
+            this.tabControl1.Location = new System.Drawing.Point(12, 27);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(1039, 554);
+            this.tabControl1.Size = new System.Drawing.Size(1039, 539);
             this.tabControl1.TabIndex = 9;
             // 
             // tpageYoutube
             // 
+            this.tpageYoutube.BackColor = System.Drawing.Color.DimGray;
             this.tpageYoutube.Location = new System.Drawing.Point(4, 24);
             this.tpageYoutube.Name = "tpageYoutube";
             this.tpageYoutube.Padding = new System.Windows.Forms.Padding(3);
-            this.tpageYoutube.Size = new System.Drawing.Size(1031, 526);
+            this.tpageYoutube.Size = new System.Drawing.Size(1031, 511);
             this.tpageYoutube.TabIndex = 1;
             this.tpageYoutube.Text = "Youtube";
-            this.tpageYoutube.UseVisualStyleBackColor = true;
             // 
             // tpageInstagram
             // 
+            this.tpageInstagram.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.tpageInstagram.Controls.Add(this.button1);
+            this.tpageInstagram.Controls.Add(this.btnIGRemoveUser);
+            this.tpageInstagram.Controls.Add(this.btnIGAddUser);
+            this.tpageInstagram.Controls.Add(this.lsvIGFollowed);
             this.tpageInstagram.Controls.Add(this.btnIGValidate);
             this.tpageInstagram.Controls.Add(this.ptnIGParseOnly);
-            this.tpageInstagram.Controls.Add(this.textBox1);
-            this.tpageInstagram.Controls.Add(this.label3);
             this.tpageInstagram.Controls.Add(this.label2);
             this.tpageInstagram.Controls.Add(this.nudIGMaxToScrape);
             this.tpageInstagram.Controls.Add(this.groupBox1);
@@ -237,16 +250,65 @@ namespace DataHoarder_DL
             this.tpageInstagram.Location = new System.Drawing.Point(4, 24);
             this.tpageInstagram.Name = "tpageInstagram";
             this.tpageInstagram.Padding = new System.Windows.Forms.Padding(3);
-            this.tpageInstagram.Size = new System.Drawing.Size(1031, 526);
+            this.tpageInstagram.Size = new System.Drawing.Size(1031, 511);
             this.tpageInstagram.TabIndex = 0;
             this.tpageInstagram.Text = "Instagram";
-            this.tpageInstagram.UseVisualStyleBackColor = true;
+            // 
+            // btnIGRemoveUser
+            // 
+            this.btnIGRemoveUser.Location = new System.Drawing.Point(865, 415);
+            this.btnIGRemoveUser.Name = "btnIGRemoveUser";
+            this.btnIGRemoveUser.Size = new System.Drawing.Size(158, 23);
+            this.btnIGRemoveUser.TabIndex = 22;
+            this.btnIGRemoveUser.Text = "Remove User";
+            this.btnIGRemoveUser.UseVisualStyleBackColor = true;
+            this.btnIGRemoveUser.Click += new System.EventHandler(this.btnIGRemoveUser_Click);
+            // 
+            // btnIGAddUser
+            // 
+            this.btnIGAddUser.Location = new System.Drawing.Point(701, 415);
+            this.btnIGAddUser.Name = "btnIGAddUser";
+            this.btnIGAddUser.Size = new System.Drawing.Size(158, 23);
+            this.btnIGAddUser.TabIndex = 21;
+            this.btnIGAddUser.Text = "Add User";
+            this.btnIGAddUser.UseVisualStyleBackColor = true;
+            this.btnIGAddUser.Click += new System.EventHandler(this.btnIGAddUser_Click);
+            // 
+            // lsvIGFollowed
+            // 
+            this.lsvIGFollowed.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1,
+            this.columnHeader2,
+            this.columnHeader3,
+            this.columnHeader4});
+            this.lsvIGFollowed.HideSelection = false;
+            this.lsvIGFollowed.Location = new System.Drawing.Point(407, 6);
+            this.lsvIGFollowed.Name = "lsvIGFollowed";
+            this.lsvIGFollowed.Size = new System.Drawing.Size(618, 403);
+            this.lsvIGFollowed.TabIndex = 20;
+            this.lsvIGFollowed.UseCompatibleStateImageBehavior = false;
+            this.lsvIGFollowed.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeader1
+            // 
+            this.columnHeader1.Text = "Username";
+            this.columnHeader1.Width = 200;
+            // 
+            // columnHeader2
+            // 
+            this.columnHeader2.Text = "Last Scraped";
+            this.columnHeader2.Width = 100;
+            // 
+            // columnHeader3
+            // 
+            this.columnHeader3.Text = "# Scraped";
+            this.columnHeader3.Width = 80;
             // 
             // btnIGValidate
             // 
-            this.btnIGValidate.Location = new System.Drawing.Point(872, 78);
+            this.btnIGValidate.Location = new System.Drawing.Point(865, 475);
             this.btnIGValidate.Name = "btnIGValidate";
-            this.btnIGValidate.Size = new System.Drawing.Size(119, 23);
+            this.btnIGValidate.Size = new System.Drawing.Size(158, 23);
             this.btnIGValidate.TabIndex = 19;
             this.btnIGValidate.Text = "Validate Only";
             this.btnIGValidate.UseVisualStyleBackColor = true;
@@ -254,29 +316,13 @@ namespace DataHoarder_DL
             // 
             // ptnIGParseOnly
             // 
-            this.ptnIGParseOnly.Location = new System.Drawing.Point(872, 49);
+            this.ptnIGParseOnly.Location = new System.Drawing.Point(865, 446);
             this.ptnIGParseOnly.Name = "ptnIGParseOnly";
-            this.ptnIGParseOnly.Size = new System.Drawing.Size(119, 23);
+            this.ptnIGParseOnly.Size = new System.Drawing.Size(158, 23);
             this.ptnIGParseOnly.TabIndex = 18;
             this.ptnIGParseOnly.Text = "Parse Only";
             this.ptnIGParseOnly.UseVisualStyleBackColor = true;
             this.ptnIGParseOnly.Click += new System.EventHandler(this.ptnIGParseOnly_Click);
-            // 
-            // textBox1
-            // 
-            this.textBox1.Location = new System.Drawing.Point(407, 67);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(196, 23);
-            this.textBox1.TabIndex = 16;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(407, 49);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(65, 15);
-            this.label3.TabIndex = 17;
-            this.label3.Text = "Something";
             // 
             // label2
             // 
@@ -327,16 +373,49 @@ namespace DataHoarder_DL
             // 
             // rtbLogger
             // 
+            this.rtbLogger.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.rtbLogger.ForeColor = System.Drawing.SystemColors.Control;
             this.rtbLogger.Location = new System.Drawing.Point(4, 624);
             this.rtbLogger.Name = "rtbLogger";
             this.rtbLogger.Size = new System.Drawing.Size(1362, 210);
             this.rtbLogger.TabIndex = 10;
             this.rtbLogger.Text = "";
             // 
+            // menuStrip1
+            // 
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.fileToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(1372, 24);
+            this.menuStrip1.TabIndex = 11;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // fileToolStripMenuItem
+            // 
+            this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+            this.fileToolStripMenuItem.Text = "File";
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(701, 446);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(158, 23);
+            this.button1.TabIndex = 23;
+            this.button1.Text = "Test";
+            this.button1.UseVisualStyleBackColor = true;
+            // 
+            // columnHeader4
+            // 
+            this.columnHeader4.Text = "Last Validated";
+            this.columnHeader4.Width = 100;
+            // 
             // DownloaderUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.ClientSize = new System.Drawing.Size(1372, 835);
             this.Controls.Add(this.rtbLogger);
             this.Controls.Add(this.tabControl1);
@@ -348,6 +427,8 @@ namespace DataHoarder_DL
             this.Controls.Add(this.btnDLDirBrowse);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.txtDLDir);
+            this.Controls.Add(this.menuStrip1);
+            this.ForeColor = System.Drawing.SystemColors.ControlDark;
             this.Name = "DownloaderUI";
             this.Text = "DataHoarder Downloader";
             this.Load += new System.EventHandler(this.DownloaderUI_Load);
@@ -357,6 +438,8 @@ namespace DataHoarder_DL
             ((System.ComponentModel.ISupportInitialize)(this.nudIGMaxToScrape)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -387,11 +470,19 @@ namespace DataHoarder_DL
         private System.Windows.Forms.CheckBox chkIGProfileMetadata;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.NumericUpDown nudIGMaxToScrape;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button ptnIGParseOnly;
         private System.Windows.Forms.Button btnIGValidate;
         private System.Windows.Forms.RichTextBox rtbLogger;
+        private System.Windows.Forms.ListView lsvIGFollowed;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
+        private System.Windows.Forms.ColumnHeader columnHeader1;
+        private System.Windows.Forms.ColumnHeader columnHeader2;
+        private System.Windows.Forms.ColumnHeader columnHeader3;
+        private System.Windows.Forms.Button btnIGRemoveUser;
+        private System.Windows.Forms.Button btnIGAddUser;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.ColumnHeader columnHeader4;
     }
 }
 
