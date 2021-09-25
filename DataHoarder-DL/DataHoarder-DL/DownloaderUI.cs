@@ -13,6 +13,8 @@ namespace DataHoarder_DL
 {
     public partial class DownloaderUI : Form
     {
+
+        Controllers.InstagramController ig;
         public DownloaderUI()
         {
             InitializeComponent();
@@ -26,8 +28,12 @@ namespace DataHoarder_DL
 
         private void btnIGScrape_Click(object sender, EventArgs e)
         {
-            Controllers.InstagramController ig = new Controllers.InstagramController(txtIGUser.Text, txtIGPass.Text, txtDLDir.Text);
-            ig.FetchData(txtIGScrapeAcct.Text, Convert.ToInt32(nudIGMaxToScrape.Value));
+            foreach(ListViewItem item in lsvIGFollowed.SelectedItems)
+            {
+                ig.FetchData(item.Text, Convert.ToInt32(nudIGMaxToScrape.Value));
+            }
+            IGPopulateFollowed();
+            Globals.Settings.Save();
         }
 
         private void txtIGScrapeAcct_TextChanged(object sender, EventArgs e)
@@ -54,6 +60,8 @@ namespace DataHoarder_DL
             txtIGUser.Text = Globals.Settings.InstagramSettings.IGUsername;
             txtIGScrapeAcct.Text = Globals.Settings.InstagramSettings.LastScrapedUser;
             txtDLDir.Text = Globals.Settings.RootDownloadPath;
+            nudIGMaxToScrape.Value = Globals.Settings.InstagramSettings.DefaultMaxScrape;
+            ig = new Controllers.InstagramController();
             IGPopulateFollowed();
         }
 
@@ -67,22 +75,24 @@ namespace DataHoarder_DL
             {
                 ListViewItem item = new ListViewItem(user.AccountName);
                 item.SubItems.Add(user.LastScraped.ToString());
-                Controllers.InstagramController ig = new Controllers.InstagramController(txtIGUser.Text, txtIGPass.Text, txtDLDir.Text);
                 item.SubItems.Add(ig.GetItemCount(user.AccountName).ToString());
+                item.SubItems.Add(user.LastValidated.ToString());
                 lsvIGFollowed.Items.Add(item);
             }
         }
 
         private void ptnIGParseOnly_Click(object sender, EventArgs e)
         {
-            Controllers.InstagramController ig = new Controllers.InstagramController(txtIGUser.Text, txtIGPass.Text, txtDLDir.Text);
-            ig.Parse(txtIGScrapeAcct.Text);
+            ig.Parse(lsvIGFollowed.SelectedItems[0].Text);
+            IGPopulateFollowed();
+            Globals.Settings.Save();
         }
 
         private void btnIGValidate_Click(object sender, EventArgs e)
         {
-            Controllers.InstagramController ig = new Controllers.InstagramController(txtIGUser.Text, txtIGPass.Text, txtDLDir.Text);
             ig.Validate();
+            IGPopulateFollowed();
+            Globals.Settings.Save();
         }
 
         private void btnIGAddUser_Click(object sender, EventArgs e)
@@ -111,6 +121,12 @@ namespace DataHoarder_DL
                 }
             }
             IGPopulateFollowed();
+            Globals.Settings.Save();
+        }
+
+        private void nudIGMaxToScrape_ValueChanged(object sender, EventArgs e)
+        {
+            Globals.Settings.InstagramSettings.DefaultMaxScrape = Convert.ToInt32(nudIGMaxToScrape.Value);
             Globals.Settings.Save();
         }
     }

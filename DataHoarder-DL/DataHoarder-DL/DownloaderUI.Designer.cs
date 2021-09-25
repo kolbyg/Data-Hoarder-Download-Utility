@@ -47,12 +47,14 @@ namespace DataHoarder_DL
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tpageYoutube = new System.Windows.Forms.TabPage();
             this.tpageInstagram = new System.Windows.Forms.TabPage();
+            this.button1 = new System.Windows.Forms.Button();
             this.btnIGRemoveUser = new System.Windows.Forms.Button();
             this.btnIGAddUser = new System.Windows.Forms.Button();
             this.lsvIGFollowed = new System.Windows.Forms.ListView();
             this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
             this.columnHeader2 = new System.Windows.Forms.ColumnHeader();
             this.columnHeader3 = new System.Windows.Forms.ColumnHeader();
+            this.columnHeader4 = new System.Windows.Forms.ColumnHeader();
             this.btnIGValidate = new System.Windows.Forms.Button();
             this.ptnIGParseOnly = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
@@ -63,8 +65,6 @@ namespace DataHoarder_DL
             this.rtbLogger = new System.Windows.Forms.RichTextBox();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.button1 = new System.Windows.Forms.Button();
-            this.columnHeader4 = new System.Windows.Forms.ColumnHeader();
             this.tabControl1.SuspendLayout();
             this.tpageInstagram.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudIGMaxToScrape)).BeginInit();
@@ -254,6 +254,15 @@ namespace DataHoarder_DL
             this.tpageInstagram.TabIndex = 0;
             this.tpageInstagram.Text = "Instagram";
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(701, 446);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(158, 23);
+            this.button1.TabIndex = 23;
+            this.button1.Text = "Test";
+            this.button1.UseVisualStyleBackColor = true;
+            // 
             // btnIGRemoveUser
             // 
             this.btnIGRemoveUser.Location = new System.Drawing.Point(865, 415);
@@ -297,12 +306,17 @@ namespace DataHoarder_DL
             // columnHeader2
             // 
             this.columnHeader2.Text = "Last Scraped";
-            this.columnHeader2.Width = 100;
+            this.columnHeader2.Width = 140;
             // 
             // columnHeader3
             // 
             this.columnHeader3.Text = "# Scraped";
             this.columnHeader3.Width = 80;
+            // 
+            // columnHeader4
+            // 
+            this.columnHeader4.Text = "Last Validated";
+            this.columnHeader4.Width = 140;
             // 
             // btnIGValidate
             // 
@@ -339,6 +353,7 @@ namespace DataHoarder_DL
             this.nudIGMaxToScrape.Name = "nudIGMaxToScrape";
             this.nudIGMaxToScrape.Size = new System.Drawing.Size(196, 23);
             this.nudIGMaxToScrape.TabIndex = 14;
+            this.nudIGMaxToScrape.ValueChanged += new System.EventHandler(this.nudIGMaxToScrape_ValueChanged);
             // 
             // groupBox1
             // 
@@ -396,20 +411,6 @@ namespace DataHoarder_DL
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(701, 446);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(158, 23);
-            this.button1.TabIndex = 23;
-            this.button1.Text = "Test";
-            this.button1.UseVisualStyleBackColor = true;
-            // 
-            // columnHeader4
-            // 
-            this.columnHeader4.Text = "Last Validated";
-            this.columnHeader4.Width = 100;
             // 
             // DownloaderUI
             // 

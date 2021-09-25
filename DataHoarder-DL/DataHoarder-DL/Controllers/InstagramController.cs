@@ -24,11 +24,11 @@ namespace DataHoarder_DL.Controllers
         string PersonRootDir = Environment.CurrentDirectory + "\\UNKNOWN";
         bool Overwrite = false;
         Logger logger = LogManager.GetCurrentClassLogger();
-        public InstagramController(string IGUser, string IGPass, string RootDLDir)
+        public InstagramController()
         {
-            AuthUsername = IGUser;
-            AuthPass = IGPass;
-            DLDir = RootDLDir;
+            AuthUsername = Globals.Settings.InstagramSettings.IGUsername;
+            AuthPass = Globals.Settings.InstagramSettings.IGPass;
+            DLDir = Globals.Settings.RootDownloadPath;
             if(!Directory.Exists(DLDir)) { Directory.CreateDirectory(DLDir); }
             TimestampPath = DLDir + "\\timestamps";
             MetadataPath = DLDir + "\\metadata";
@@ -38,6 +38,8 @@ namespace DataHoarder_DL.Controllers
         public int GetItemCount(string username)
         {
             string path = GetUserPath(username);
+            if (String.IsNullOrEmpty(path))
+                return 0;
             IGData data = ParseIGData(path + "\\IG\\metadata\\_working.json");
             int totalAssetCount = 0;
             if(data.GraphImages != null)
@@ -71,6 +73,8 @@ namespace DataHoarder_DL.Controllers
             List<string> d = Directory.GetDirectories(Globals.Settings.RootDownloadPath).ToList();
             foreach(string dir in d)
             {
+                if (dir.Contains("IGCache"))
+                    continue;
                 string metadataDir = dir + "\\IG\\metadata\\_working.json";
                 IGData data = ParseIGData(metadataDir);
                 if(data.GraphProfileInfo.username == username)
@@ -97,13 +101,19 @@ namespace DataHoarder_DL.Controllers
             combinedData.GraphStories = new List<GraphStory>();
             foreach(IGData _data in IGDataList)
             {
-                foreach(GraphImage _image in _data.GraphImages)
+                if (_data.GraphImages != null)
                 {
-                    combinedData.GraphImages.Add(_image);
+                    foreach (GraphImage _image in _data.GraphImages)
+                    {
+                        combinedData.GraphImages.Add(_image);
+                    }
                 }
-                foreach(GraphStory _story in _data.GraphStories)
+                if (_data.GraphStories != null)
                 {
-                    combinedData.GraphStories.Add(_story);
+                    foreach (GraphStory _story in _data.GraphStories)
+                    {
+                        combinedData.GraphStories.Add(_story);
+                    }
                 }
                 if(combinedData.GraphProfileInfo == null)
                 {
@@ -131,6 +141,7 @@ namespace DataHoarder_DL.Controllers
             ScrapeAllData(username, MaxToScrape);
             Parse(username);
 
+            Globals.Settings.InstagramSettings.FollowedUsers.Find(x => x.AccountName == username).LastScraped = DateTime.Now;
             return false;
 
         }
@@ -460,12 +471,12 @@ namespace DataHoarder_DL.Controllers
             logger.Debug("Finished parsing metadata, returning...");
             return WorkingData;
         }
-        public Models.Instagram.IGData ParseIGData(string path)
+        public IGData ParseIGData(string path)
         {
             string jsondata = File.ReadAllText(path);
             return FileOperations.Json.ParseMetadata(jsondata);
         }
-        public string SerializeIGData(Models.Instagram.IGData data)
+        public string SerializeIGData(IGData data)
         {
             return FileOperations.Json.SerializeMetadata(data);
         }
