@@ -83,6 +83,11 @@ namespace DataHoarder_DL
 
         private void ptnIGParseOnly_Click(object sender, EventArgs e)
         {
+            if(lsvIGFollowed.SelectedItems.Count > 1)
+            {
+                MessageBox.Show("This mode only supports a single selection.");
+                return;
+            }
             ig.Parse(lsvIGFollowed.SelectedItems[0].Text);
             IGPopulateFollowed();
             Globals.Settings.Save();

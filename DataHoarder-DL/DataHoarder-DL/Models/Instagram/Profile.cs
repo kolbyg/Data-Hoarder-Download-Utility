@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+#pragma warning disable
 
 namespace DataHoarder_DL.Models.Instagram
 {

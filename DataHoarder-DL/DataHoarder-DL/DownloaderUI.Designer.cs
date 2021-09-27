@@ -59,16 +59,12 @@ namespace DataHoarder_DL
             this.ptnIGParseOnly = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.nudIGMaxToScrape = new System.Windows.Forms.NumericUpDown();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.chkIGMediaMetadata = new System.Windows.Forms.CheckBox();
-            this.chkIGProfileMetadata = new System.Windows.Forms.CheckBox();
             this.rtbLogger = new System.Windows.Forms.RichTextBox();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tabControl1.SuspendLayout();
             this.tpageInstagram.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudIGMaxToScrape)).BeginInit();
-            this.groupBox1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -119,7 +115,6 @@ namespace DataHoarder_DL
             // 
             // lsvQueue
             // 
-            this.lsvQueue.BackColor = System.Drawing.SystemColors.ControlDark;
             this.lsvQueue.HideSelection = false;
             this.lsvQueue.Location = new System.Drawing.Point(1057, 27);
             this.lsvQueue.Name = "lsvQueue";
@@ -220,7 +215,6 @@ namespace DataHoarder_DL
             // 
             // tpageYoutube
             // 
-            this.tpageYoutube.BackColor = System.Drawing.Color.DimGray;
             this.tpageYoutube.Location = new System.Drawing.Point(4, 24);
             this.tpageYoutube.Name = "tpageYoutube";
             this.tpageYoutube.Padding = new System.Windows.Forms.Padding(3);
@@ -230,7 +224,6 @@ namespace DataHoarder_DL
             // 
             // tpageInstagram
             // 
-            this.tpageInstagram.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.tpageInstagram.Controls.Add(this.button1);
             this.tpageInstagram.Controls.Add(this.btnIGRemoveUser);
             this.tpageInstagram.Controls.Add(this.btnIGAddUser);
@@ -239,7 +232,6 @@ namespace DataHoarder_DL
             this.tpageInstagram.Controls.Add(this.ptnIGParseOnly);
             this.tpageInstagram.Controls.Add(this.label2);
             this.tpageInstagram.Controls.Add(this.nudIGMaxToScrape);
-            this.tpageInstagram.Controls.Add(this.groupBox1);
             this.tpageInstagram.Controls.Add(this.btnIGScrape);
             this.tpageInstagram.Controls.Add(this.txtIGPass);
             this.tpageInstagram.Controls.Add(this.label4);
@@ -355,41 +347,8 @@ namespace DataHoarder_DL
             this.nudIGMaxToScrape.TabIndex = 14;
             this.nudIGMaxToScrape.ValueChanged += new System.EventHandler(this.nudIGMaxToScrape_ValueChanged);
             // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.chkIGMediaMetadata);
-            this.groupBox1.Controls.Add(this.chkIGProfileMetadata);
-            this.groupBox1.Location = new System.Drawing.Point(3, 49);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(196, 100);
-            this.groupBox1.TabIndex = 13;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Include Metadata";
-            // 
-            // chkIGMediaMetadata
-            // 
-            this.chkIGMediaMetadata.AutoSize = true;
-            this.chkIGMediaMetadata.Location = new System.Drawing.Point(6, 47);
-            this.chkIGMediaMetadata.Name = "chkIGMediaMetadata";
-            this.chkIGMediaMetadata.Size = new System.Drawing.Size(59, 19);
-            this.chkIGMediaMetadata.TabIndex = 14;
-            this.chkIGMediaMetadata.Text = "Media";
-            this.chkIGMediaMetadata.UseVisualStyleBackColor = true;
-            // 
-            // chkIGProfileMetadata
-            // 
-            this.chkIGProfileMetadata.AutoSize = true;
-            this.chkIGProfileMetadata.Location = new System.Drawing.Point(6, 22);
-            this.chkIGProfileMetadata.Name = "chkIGProfileMetadata";
-            this.chkIGProfileMetadata.Size = new System.Drawing.Size(60, 19);
-            this.chkIGProfileMetadata.TabIndex = 15;
-            this.chkIGProfileMetadata.Text = "Profile";
-            this.chkIGProfileMetadata.UseVisualStyleBackColor = true;
-            // 
             // rtbLogger
             // 
-            this.rtbLogger.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.rtbLogger.ForeColor = System.Drawing.SystemColors.Control;
             this.rtbLogger.Location = new System.Drawing.Point(4, 624);
             this.rtbLogger.Name = "rtbLogger";
             this.rtbLogger.Size = new System.Drawing.Size(1362, 210);
@@ -416,7 +375,6 @@ namespace DataHoarder_DL
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.ClientSize = new System.Drawing.Size(1372, 835);
             this.Controls.Add(this.rtbLogger);
             this.Controls.Add(this.tabControl1);
@@ -429,7 +387,6 @@ namespace DataHoarder_DL
             this.Controls.Add(this.label1);
             this.Controls.Add(this.txtDLDir);
             this.Controls.Add(this.menuStrip1);
-            this.ForeColor = System.Drawing.SystemColors.ControlDark;
             this.Name = "DownloaderUI";
             this.Text = "DataHoarder Downloader";
             this.Load += new System.EventHandler(this.DownloaderUI_Load);
@@ -437,8 +394,6 @@ namespace DataHoarder_DL
             this.tpageInstagram.ResumeLayout(false);
             this.tpageInstagram.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudIGMaxToScrape)).EndInit();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
@@ -466,9 +421,6 @@ namespace DataHoarder_DL
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tpageYoutube;
         private System.Windows.Forms.TabPage tpageInstagram;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.CheckBox chkIGMediaMetadata;
-        private System.Windows.Forms.CheckBox chkIGProfileMetadata;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.NumericUpDown nudIGMaxToScrape;
         private System.Windows.Forms.Button ptnIGParseOnly;
