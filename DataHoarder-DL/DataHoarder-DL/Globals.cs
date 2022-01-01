@@ -79,5 +79,7 @@ namespace DataHoarder_DL
         public TikTokSettings TikTokSettings = new TikTokSettings();
         [JsonProperty]
         public string RootDownloadPath = Environment.CurrentDirectory + "\\DL";
+        [JsonProperty]
+        public bool DisclaimerAccepted = false;
     }
 }

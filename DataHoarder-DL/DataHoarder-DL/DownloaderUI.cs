@@ -76,7 +76,7 @@ namespace DataHoarder_DL
             {
                 ListViewItem item = new ListViewItem(user.AccountName);
                 item.SubItems.Add(user.LastScraped.ToString());
-                item.SubItems.Add(ig.GetItemCount(user.AccountName).ToString());
+                item.SubItems.Add(ig.GetItemMetadataCount(user.AccountName).ToString());
                 item.SubItems.Add(user.LastValidated.ToString());
                 lsvIGFollowed.Items.Add(item);
             }

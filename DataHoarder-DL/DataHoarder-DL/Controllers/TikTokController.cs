@@ -17,20 +17,17 @@ namespace DataHoarder_DL.Controllers
         //string AuthUsername = "";
         //string AuthPass = "";
         string DLDir = Environment.CurrentDirectory;
-        //string TimestampPath = Environment.CurrentDirectory + "\\timestamps";
-        string MetadataPath;// = Environment.CurrentDirectory + "\\metadata";
+        string MetadataPath;
         string HistoryPath;
-        string MediaPath;// = Environment.CurrentDirectory + "\\media";
-        string CachePath;// = Environment.CurrentDirectory + "\\Cache";
+        string MediaPath;
+        string CachePath;
         string ytdlpPath = Globals.BinDir + "\\yt-dlp";
-        //string PersonRootDir;// = Environment.CurrentDirectory + "\\UNKNOWN";
         bool Overwrite = false;
         Logger logger = LogManager.GetCurrentClassLogger();
         public TikTokController()
         {
             DLDir = Globals.Settings.RootDownloadPath + "\\TT";
             if (!Directory.Exists(DLDir)) { Directory.CreateDirectory(DLDir); }
-            //TimestampPath = DLDir + "\\timestamps";
             MetadataPath = DLDir + "\\metadata";
             if (!Directory.Exists(MetadataPath)) { Directory.CreateDirectory(MetadataPath); }
             HistoryPath = DLDir + "\\history";
@@ -44,6 +41,7 @@ namespace DataHoarder_DL.Controllers
         public int GetItemCount(string username)
         {
             return 0;
+            //TODO
                 /**
             string path = GetUserPath(username);
             if (String.IsNullOrEmpty(path))
@@ -234,19 +232,11 @@ namespace DataHoarder_DL.Controllers
         }
         private string BuildScrapeCommand(string AccountToScrape, string DownloadPath, int MaxItemsToScrape)
         {
-            //string namingTemplate = "{urlname}";
             logger.Debug("Building scrape command");
             logger.Debug("AccountToScrape: " + AccountToScrape);
-            //logger.Debug("IGUsername: " + IGUsername);
-            //logger.Debug("IGPassword: " + IGPassword);
             logger.Debug("DownloadPath: " + CachePath);
             logger.Debug("HistoryPath: " + HistoryPath);
-            //logger.Debug("TimestampPath: " + TimestampPath);
-            //logger.Debug("IncludeMediaMetadata: " + IncludeMediaMetadata);
-            //logger.Debug("IncludeProfileMetadata: " + IncludeProfileMetadata);
-            //logger.Debug("WriteTimestampFile: " + WriteTimestampFile);
             logger.Debug("MaxItemsToScrape: " + MaxItemsToScrape);
-            //logger.Debug("namingTemplate: " + namingTemplate);
             string scrapeCommandBase = $"-P \"{CachePath}\" --download-archive \"{HistoryPath + "\\" + AccountToScrape + ".history"}\" --write-info-json --write-playlist-metafiles \"https://www.tiktok.com/@{AccountToScrape}\"";
             if (MaxItemsToScrape != 0)
             {
