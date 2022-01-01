@@ -59,12 +59,28 @@ namespace DataHoarder_DL
             this.ptnIGParseOnly = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.nudIGMaxToScrape = new System.Windows.Forms.NumericUpDown();
+            this.tpageTiktok = new System.Windows.Forms.TabPage();
+            this.label3 = new System.Windows.Forms.Label();
+            this.nudTTMaxToScrape = new System.Windows.Forms.NumericUpDown();
+            this.label7 = new System.Windows.Forms.Label();
+            this.txtTTScrapeAcct = new System.Windows.Forms.TextBox();
+            this.btnTTRemoveUser = new System.Windows.Forms.Button();
+            this.btnTTAddUser = new System.Windows.Forms.Button();
+            this.lsvTTFollowed = new System.Windows.Forms.ListView();
+            this.columnHeader5 = new System.Windows.Forms.ColumnHeader();
+            this.columnHeader6 = new System.Windows.Forms.ColumnHeader();
+            this.columnHeader7 = new System.Windows.Forms.ColumnHeader();
+            this.columnHeader8 = new System.Windows.Forms.ColumnHeader();
+            this.btnTTScrape = new System.Windows.Forms.Button();
             this.rtbLogger = new System.Windows.Forms.RichTextBox();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnTTParseOnly = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tpageInstagram.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudIGMaxToScrape)).BeginInit();
+            this.tpageTiktok.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudTTMaxToScrape)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -207,6 +223,7 @@ namespace DataHoarder_DL
             // 
             this.tabControl1.Controls.Add(this.tpageYoutube);
             this.tabControl1.Controls.Add(this.tpageInstagram);
+            this.tabControl1.Controls.Add(this.tpageTiktok);
             this.tabControl1.Location = new System.Drawing.Point(12, 27);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
@@ -347,6 +364,123 @@ namespace DataHoarder_DL
             this.nudIGMaxToScrape.TabIndex = 14;
             this.nudIGMaxToScrape.ValueChanged += new System.EventHandler(this.nudIGMaxToScrape_ValueChanged);
             // 
+            // tpageTiktok
+            // 
+            this.tpageTiktok.BackColor = System.Drawing.SystemColors.Control;
+            this.tpageTiktok.Controls.Add(this.btnTTParseOnly);
+            this.tpageTiktok.Controls.Add(this.label3);
+            this.tpageTiktok.Controls.Add(this.nudTTMaxToScrape);
+            this.tpageTiktok.Controls.Add(this.label7);
+            this.tpageTiktok.Controls.Add(this.txtTTScrapeAcct);
+            this.tpageTiktok.Controls.Add(this.btnTTRemoveUser);
+            this.tpageTiktok.Controls.Add(this.btnTTAddUser);
+            this.tpageTiktok.Controls.Add(this.lsvTTFollowed);
+            this.tpageTiktok.Controls.Add(this.btnTTScrape);
+            this.tpageTiktok.Location = new System.Drawing.Point(4, 24);
+            this.tpageTiktok.Name = "tpageTiktok";
+            this.tpageTiktok.Size = new System.Drawing.Size(1031, 511);
+            this.tpageTiktok.TabIndex = 2;
+            this.tpageTiktok.Text = "TikTok";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(208, 7);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(114, 15);
+            this.label3.TabIndex = 32;
+            this.label3.Text = "Max Items to Scrape";
+            // 
+            // nudTTMaxToScrape
+            // 
+            this.nudTTMaxToScrape.Location = new System.Drawing.Point(208, 25);
+            this.nudTTMaxToScrape.Name = "nudTTMaxToScrape";
+            this.nudTTMaxToScrape.Size = new System.Drawing.Size(196, 23);
+            this.nudTTMaxToScrape.TabIndex = 31;
+            this.nudTTMaxToScrape.ValueChanged += new System.EventHandler(this.nudTTMaxToScrape_ValueChanged);
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(208, 51);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(87, 15);
+            this.label7.TabIndex = 29;
+            this.label7.Text = "Account Name";
+            // 
+            // txtTTScrapeAcct
+            // 
+            this.txtTTScrapeAcct.Location = new System.Drawing.Point(208, 69);
+            this.txtTTScrapeAcct.Name = "txtTTScrapeAcct";
+            this.txtTTScrapeAcct.Size = new System.Drawing.Size(196, 23);
+            this.txtTTScrapeAcct.TabIndex = 30;
+            this.txtTTScrapeAcct.TextChanged += new System.EventHandler(this.txtTTScrapeAccount_TextChanged);
+            // 
+            // btnTTRemoveUser
+            // 
+            this.btnTTRemoveUser.Location = new System.Drawing.Point(870, 441);
+            this.btnTTRemoveUser.Name = "btnTTRemoveUser";
+            this.btnTTRemoveUser.Size = new System.Drawing.Size(158, 23);
+            this.btnTTRemoveUser.TabIndex = 28;
+            this.btnTTRemoveUser.Text = "Remove User";
+            this.btnTTRemoveUser.UseVisualStyleBackColor = true;
+            this.btnTTRemoveUser.Click += new System.EventHandler(this.btnTTRemoveUser_Click);
+            // 
+            // btnTTAddUser
+            // 
+            this.btnTTAddUser.Location = new System.Drawing.Point(870, 412);
+            this.btnTTAddUser.Name = "btnTTAddUser";
+            this.btnTTAddUser.Size = new System.Drawing.Size(158, 23);
+            this.btnTTAddUser.TabIndex = 27;
+            this.btnTTAddUser.Text = "Add User";
+            this.btnTTAddUser.UseVisualStyleBackColor = true;
+            this.btnTTAddUser.Click += new System.EventHandler(this.btnTTAddUser_Click);
+            // 
+            // lsvTTFollowed
+            // 
+            this.lsvTTFollowed.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader5,
+            this.columnHeader6,
+            this.columnHeader7,
+            this.columnHeader8});
+            this.lsvTTFollowed.HideSelection = false;
+            this.lsvTTFollowed.Location = new System.Drawing.Point(410, 3);
+            this.lsvTTFollowed.Name = "lsvTTFollowed";
+            this.lsvTTFollowed.Size = new System.Drawing.Size(618, 403);
+            this.lsvTTFollowed.TabIndex = 26;
+            this.lsvTTFollowed.UseCompatibleStateImageBehavior = false;
+            this.lsvTTFollowed.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeader5
+            // 
+            this.columnHeader5.Text = "Username";
+            this.columnHeader5.Width = 200;
+            // 
+            // columnHeader6
+            // 
+            this.columnHeader6.Text = "Last Scraped";
+            this.columnHeader6.Width = 140;
+            // 
+            // columnHeader7
+            // 
+            this.columnHeader7.Text = "# Scraped";
+            this.columnHeader7.Width = 80;
+            // 
+            // columnHeader8
+            // 
+            this.columnHeader8.Text = "Last Validated";
+            this.columnHeader8.Width = 140;
+            // 
+            // btnTTScrape
+            // 
+            this.btnTTScrape.Location = new System.Drawing.Point(410, 412);
+            this.btnTTScrape.Name = "btnTTScrape";
+            this.btnTTScrape.Size = new System.Drawing.Size(158, 23);
+            this.btnTTScrape.TabIndex = 24;
+            this.btnTTScrape.Text = "Scrape Selected";
+            this.btnTTScrape.UseVisualStyleBackColor = true;
+            this.btnTTScrape.Click += new System.EventHandler(this.btnTTScrape_Click);
+            // 
             // rtbLogger
             // 
             this.rtbLogger.Location = new System.Drawing.Point(4, 624);
@@ -371,6 +505,16 @@ namespace DataHoarder_DL
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
+            // btnTTParseOnly
+            // 
+            this.btnTTParseOnly.Location = new System.Drawing.Point(410, 441);
+            this.btnTTParseOnly.Name = "btnTTParseOnly";
+            this.btnTTParseOnly.Size = new System.Drawing.Size(158, 23);
+            this.btnTTParseOnly.TabIndex = 33;
+            this.btnTTParseOnly.Text = "Parse Only";
+            this.btnTTParseOnly.UseVisualStyleBackColor = true;
+            this.btnTTParseOnly.Click += new System.EventHandler(this.btnTTParseOnly_Click);
+            // 
             // DownloaderUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -394,6 +538,9 @@ namespace DataHoarder_DL
             this.tpageInstagram.ResumeLayout(false);
             this.tpageInstagram.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudIGMaxToScrape)).EndInit();
+            this.tpageTiktok.ResumeLayout(false);
+            this.tpageTiktok.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudTTMaxToScrape)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
@@ -436,6 +583,20 @@ namespace DataHoarder_DL
         private System.Windows.Forms.Button btnIGAddUser;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.ColumnHeader columnHeader4;
+        private System.Windows.Forms.TabPage tpageTiktok;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.NumericUpDown nudTTMaxToScrape;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.TextBox txtTTScrapeAcct;
+        private System.Windows.Forms.Button btnTTRemoveUser;
+        private System.Windows.Forms.Button btnTTAddUser;
+        private System.Windows.Forms.ListView lsvTTFollowed;
+        private System.Windows.Forms.ColumnHeader columnHeader5;
+        private System.Windows.Forms.ColumnHeader columnHeader6;
+        private System.Windows.Forms.ColumnHeader columnHeader7;
+        private System.Windows.Forms.ColumnHeader columnHeader8;
+        private System.Windows.Forms.Button btnTTScrape;
+        private System.Windows.Forms.Button btnTTParseOnly;
     }
 }
 

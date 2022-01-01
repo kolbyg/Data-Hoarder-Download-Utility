@@ -8,6 +8,7 @@ using System.Diagnostics;
 using DataHoarder_DL.Models.Instagram;
 using System.Globalization;
 using NLog;
+using System.Net;
 
 namespace DataHoarder_DL.Controllers
 {
@@ -28,7 +29,7 @@ namespace DataHoarder_DL.Controllers
         {
             AuthUsername = Globals.Settings.InstagramSettings.IGUsername;
             AuthPass = Globals.Settings.InstagramSettings.IGPass;
-            DLDir = Globals.Settings.RootDownloadPath;
+            DLDir = Globals.Settings.RootDownloadPath + "\\IG";
             if(!Directory.Exists(DLDir)) { Directory.CreateDirectory(DLDir); }
             TimestampPath = DLDir + "\\timestamps";
             MetadataPath = DLDir + "\\metadata";
@@ -70,7 +71,7 @@ namespace DataHoarder_DL.Controllers
         }
         private string GetUserPath(string username)
         {
-            List<string> d = Directory.GetDirectories(Globals.Settings.RootDownloadPath).ToList();
+            List<string> d = Directory.GetDirectories(DLDir).ToList();
             foreach(string dir in d)
             {
                 if (dir.Contains("IGCache"))
@@ -163,8 +164,26 @@ namespace DataHoarder_DL.Controllers
             if(ToDownload != null)
             {
                 logger.Warn("Some files failed to validate and will be downloaded.");
+                DownloadMissing(ToDownload);
             }
             return false;
+        }
+        private void DownloadMissing(List<IGData> MissingData)
+        {
+            /**using (var client = new WebClient)
+            {
+                foreach (IGData data in MissingData)
+                {
+                    foreach(GraphImage image in data.GraphImages)
+                    {
+                        client.DownloadFile(image.)
+                    }
+                    foreach (GraphStory story in data.GraphStories)
+                    {
+
+                    }
+                }
+            }*/
         }
         public bool Parse(string username)
         {
@@ -346,7 +365,7 @@ namespace DataHoarder_DL.Controllers
             logger.Debug($"Setting PersonRootDir to {PersonRootDir}");
             if (CreateDirectories)
                 if (!Directory.Exists(PersonRootDir)) Directory.CreateDirectory(PersonRootDir);
-            PersonRootDir += "\\IG";
+            //PersonRootDir += "\\IG";
             if (CreateDirectories)
                 if (!Directory.Exists(PersonRootDir)) Directory.CreateDirectory(PersonRootDir);
             TimestampPath = PersonRootDir + "\\timestamps";

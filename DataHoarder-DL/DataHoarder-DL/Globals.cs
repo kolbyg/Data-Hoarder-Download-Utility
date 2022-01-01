@@ -19,6 +19,28 @@ namespace DataHoarder_DL
         public static string BinDir = Environment.CurrentDirectory + "\\bin";
         public static Settings Settings;
     }
+    public class TikTokSettings
+    {
+        [JsonProperty]
+        public string LastScrapedUser = "donaldtrump";
+        [JsonProperty]
+        public int DefaultMaxScrape = 20;
+        [JsonProperty]
+        public List<TTFollowedUser> FollowedUsers = new List<TTFollowedUser>();
+    }
+    public class TTFollowedUser
+    {
+        [JsonProperty]
+        public string AccountName;
+        [JsonProperty]
+        public DateTime LastScraped = DateTime.UnixEpoch;
+        [JsonProperty]
+        public DateTime LastValidated = DateTime.UnixEpoch;
+        public TTFollowedUser(string Username)
+        {
+            AccountName = Username;
+        }
+    }
     public class InstagramSettings
     {
         [JsonProperty]
@@ -53,6 +75,8 @@ namespace DataHoarder_DL
         }
         [JsonProperty]
         public InstagramSettings InstagramSettings = new InstagramSettings();
+        [JsonProperty]
+        public TikTokSettings TikTokSettings = new TikTokSettings();
         [JsonProperty]
         public string RootDownloadPath = Environment.CurrentDirectory + "\\DL";
     }
