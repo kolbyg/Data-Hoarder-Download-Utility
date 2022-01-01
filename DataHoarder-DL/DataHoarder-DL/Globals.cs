@@ -13,9 +13,9 @@ namespace DataHoarder_DL
     {
         public static string SettingsPath = Environment.CurrentDirectory + "\\settings.json";
         //public static List<Module> Modules = new List<Module>();
-        public static string WorkingDir = Environment.CurrentDirectory + "\\data";
-        public static string MediaDir = Environment.CurrentDirectory + "\\media";
-        public static string CacheDir = Environment.CurrentDirectory + "\\cache";
+        //public static string WorkingDir = Environment.CurrentDirectory + "\\data";
+        //public static string MediaDir = Environment.CurrentDirectory + "\\media";
+        //public static string CacheDir = Environment.CurrentDirectory + "\\cache";
         public static string BinDir = Environment.CurrentDirectory + "\\bin";
         public static Settings Settings;
     }

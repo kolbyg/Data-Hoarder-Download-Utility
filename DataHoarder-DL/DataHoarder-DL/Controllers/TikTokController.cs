@@ -18,11 +18,12 @@ namespace DataHoarder_DL.Controllers
         //string AuthPass = "";
         string DLDir = Environment.CurrentDirectory;
         //string TimestampPath = Environment.CurrentDirectory + "\\timestamps";
-        string MetadataPath = Environment.CurrentDirectory + "\\metadata";
-        string MediaPath = Environment.CurrentDirectory + "\\media";
-        string Cache = Environment.CurrentDirectory + "\\Cache";
+        string MetadataPath;// = Environment.CurrentDirectory + "\\metadata";
+        string HistoryPath;
+        string MediaPath;// = Environment.CurrentDirectory + "\\media";
+        string CachePath;// = Environment.CurrentDirectory + "\\Cache";
         string ytdlpPath = Globals.BinDir + "\\yt-dlp";
-        string PersonRootDir = Environment.CurrentDirectory + "\\UNKNOWN";
+        //string PersonRootDir;// = Environment.CurrentDirectory + "\\UNKNOWN";
         bool Overwrite = false;
         Logger logger = LogManager.GetCurrentClassLogger();
         public TikTokController()
@@ -31,8 +32,13 @@ namespace DataHoarder_DL.Controllers
             if (!Directory.Exists(DLDir)) { Directory.CreateDirectory(DLDir); }
             //TimestampPath = DLDir + "\\timestamps";
             MetadataPath = DLDir + "\\metadata";
+            if (!Directory.Exists(MetadataPath)) { Directory.CreateDirectory(MetadataPath); }
+            HistoryPath = DLDir + "\\history";
+            if (!Directory.Exists(HistoryPath)) { Directory.CreateDirectory(HistoryPath); }
             MediaPath = DLDir + "\\media";
-            Cache = DLDir + "\\Cache";
+            if (!Directory.Exists(MediaPath)) { Directory.CreateDirectory(MediaPath); }
+            CachePath = DLDir + "\\cache";
+            if (!Directory.Exists(CachePath)) { Directory.CreateDirectory(CachePath); }
         }
 
         public int GetItemCount(string username)
@@ -90,7 +96,37 @@ namespace DataHoarder_DL.Controllers
             return false;
         }
         private void ProcessCache(string username)
-        {/**
+        {
+            try
+            {
+                string PersonMediaDir = MediaPath +"\\" + username;
+                if (!Directory.Exists(PersonMediaDir)) { Directory.CreateDirectory(PersonMediaDir); }
+                string PersonMetadataDir = MetadataPath + "\\" + username;
+                if (!Directory.Exists(PersonMetadataDir)) { Directory.CreateDirectory(PersonMetadataDir); }
+                //Move history file first
+                //File.Move(CachePath + $"\\{username}.history", HistoryPath + $"\\{username}.history");
+                DirectoryInfo directoryInfo = new DirectoryInfo(CachePath);
+                foreach(FileInfo file in directoryInfo.EnumerateFiles())
+                {
+                    if(file.Extension == ".json")
+                    {
+                        if (File.Exists(PersonMetadataDir + "\\" + file.Name))
+                        {
+                            File.Move(PersonMetadataDir + "\\" + file.Name, PersonMetadataDir + "\\" + file.Name + "." + DateTime.Now.ToString("yyyyMMddHHmmss"));
+                        }
+                        file.MoveTo(PersonMetadataDir + "\\" + file.Name);
+                    }
+                    else
+                    {
+                        file.MoveTo(PersonMediaDir + "\\" + file.Name);
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                logger.Error(ex.Message);
+            }
+            /**
             string CachedMetadata = $"{Cache}\\{username}.json";
             logger.Debug("Begin processing cache from " + CachedMetadata);
 
@@ -192,8 +228,7 @@ namespace DataHoarder_DL.Controllers
         public bool ScrapeAllData(string username, int MaxItemsToScrape)
         {
             logger.Info($"Begin data scraping for {username}, maximum {MaxItemsToScrape} items");
-            if (!Directory.Exists(Cache)) { Directory.CreateDirectory(Cache); }
-            string scrapeCommand = BuildScrapeCommand(username, Cache, MaxItemsToScrape);
+            string scrapeCommand = BuildScrapeCommand(username, CachePath, MaxItemsToScrape);
             InvokeTTScraper(scrapeCommand);
             return false;
         }
@@ -204,14 +239,15 @@ namespace DataHoarder_DL.Controllers
             logger.Debug("AccountToScrape: " + AccountToScrape);
             //logger.Debug("IGUsername: " + IGUsername);
             //logger.Debug("IGPassword: " + IGPassword);
-            logger.Debug("DownloadPath: " + DownloadPath);
+            logger.Debug("DownloadPath: " + CachePath);
+            logger.Debug("HistoryPath: " + HistoryPath);
             //logger.Debug("TimestampPath: " + TimestampPath);
             //logger.Debug("IncludeMediaMetadata: " + IncludeMediaMetadata);
             //logger.Debug("IncludeProfileMetadata: " + IncludeProfileMetadata);
             //logger.Debug("WriteTimestampFile: " + WriteTimestampFile);
             logger.Debug("MaxItemsToScrape: " + MaxItemsToScrape);
             //logger.Debug("namingTemplate: " + namingTemplate);
-            string scrapeCommandBase = $"-P \"{DownloadPath}\" --download-archive \"{DownloadPath + "\\" + AccountToScrape + ".history"}\" --write-info-json --write-playlist-metafiles \"https://www.tiktok.com/@{AccountToScrape}\"";
+            string scrapeCommandBase = $"-P \"{CachePath}\" --download-archive \"{HistoryPath + "\\" + AccountToScrape + ".history"}\" --write-info-json --write-playlist-metafiles \"https://www.tiktok.com/@{AccountToScrape}\"";
             if (MaxItemsToScrape != 0)
             {
                 scrapeCommandBase += $" --maximum {MaxItemsToScrape}";
@@ -225,7 +261,7 @@ namespace DataHoarder_DL.Controllers
             Process p = new Process();
             p.StartInfo.Arguments = ScrapeCommand;
             p.StartInfo.WorkingDirectory = ytdlpPath;
-            p.StartInfo.FileName = "youtube-dl.exe";
+            p.StartInfo.FileName = "yt-dlp.exe";
             p.StartInfo.CreateNoWindow = false;
             p.StartInfo.RedirectStandardError = false;
             p.StartInfo.RedirectStandardOutput = false;
