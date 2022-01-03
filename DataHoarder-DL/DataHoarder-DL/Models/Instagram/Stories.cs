@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 
 namespace DataHoarder_DL.Models.Instagram
 {
-    class TappableObject
+    public class TappableObject
     {
         [JsonProperty]
         public string __typename;
@@ -37,7 +37,7 @@ namespace DataHoarder_DL.Models.Instagram
         [JsonProperty]
         public decimal y;
     }
-    class VideoResource
+    public class VideoResource
     {
         [JsonProperty]
         public int config_height;
@@ -50,7 +50,7 @@ namespace DataHoarder_DL.Models.Instagram
         [JsonProperty]
         public string src;
     }
-    class GraphStory
+    public class GraphStory
     {
         [JsonProperty]
         public string __typename;

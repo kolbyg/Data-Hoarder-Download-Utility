@@ -19,6 +19,17 @@ namespace DataHoarder_DL
         public static string BinDir = Environment.CurrentDirectory + "\\bin";
         public static Settings Settings;
     }
+    public class Queue
+    {
+        [JsonProperty]
+        public List<Models.Queue.InstagramItem> IGQueueItems = new List<Models.Queue.InstagramItem>();
+        [JsonProperty]
+        public List<Models.Queue.TikTokItem> TTQueueItems = new List<Models.Queue.TikTokItem>();
+        [JsonProperty]
+        public List<Models.Queue.YoutubeItem> YTQueueItems = new List<Models.Queue.YoutubeItem>();
+        [JsonProperty]
+        public bool ProcessAsync = false;
+    }
     public class TikTokSettings
     {
         [JsonProperty]
@@ -81,5 +92,7 @@ namespace DataHoarder_DL
         public string RootDownloadPath = Environment.CurrentDirectory + "\\DL";
         [JsonProperty]
         public bool DisclaimerAccepted = false;
+        [JsonProperty]
+        public Queue DLQueue = new Queue();
     }
 }

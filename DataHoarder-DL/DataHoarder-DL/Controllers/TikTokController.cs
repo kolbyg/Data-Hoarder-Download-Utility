@@ -12,7 +12,7 @@ using System.Net;
 
 namespace DataHoarder_DL.Controllers
 {
-    class TikTokController
+    public class TikTokController
     {
         //string AuthUsername = "";
         //string AuthPass = "";
@@ -37,8 +37,23 @@ namespace DataHoarder_DL.Controllers
             CachePath = DLDir + "\\cache";
             if (!Directory.Exists(CachePath)) { Directory.CreateDirectory(CachePath); }
         }
-
-        public int GetItemCount(string username)
+        public int GetItemFileCount(string username)
+        {
+            string path = GetUserMediaPath(username);
+            if (String.IsNullOrEmpty(path) || !Directory.Exists(path) || Directory.GetFiles(path).Length == 0)
+                return 0;
+            string[] files = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories);
+            return files.Length;
+        }
+        private string GetUserMetadataPath(string username)
+        {
+            return MetadataPath + "\\" + username;
+        }
+        private string GetUserMediaPath(string username)
+        {
+            return MediaPath + "\\" + username;
+        }
+        public int GetItemMetadataCount(string username)
         {
             return 0;
             //TODO
@@ -232,12 +247,15 @@ namespace DataHoarder_DL.Controllers
         }
         private string BuildScrapeCommand(string AccountToScrape, string DownloadPath, int MaxItemsToScrape)
         {
+            string OutputNameFormat = "[%(id)s].%(ext)s";
             logger.Debug("Building scrape command");
             logger.Debug("AccountToScrape: " + AccountToScrape);
             logger.Debug("DownloadPath: " + CachePath);
             logger.Debug("HistoryPath: " + HistoryPath);
             logger.Debug("MaxItemsToScrape: " + MaxItemsToScrape);
-            string scrapeCommandBase = $"-P \"{CachePath}\" --download-archive \"{HistoryPath + "\\" + AccountToScrape + ".history"}\" --write-info-json --write-playlist-metafiles \"https://www.tiktok.com/@{AccountToScrape}\"";
+            logger.Debug("Output Name Format: " + OutputNameFormat);
+
+            string scrapeCommandBase = $"-P \"{CachePath}\" --download-archive \"{HistoryPath + "\\" + AccountToScrape + ".history"}\" --write-info-json --write-playlist-metafiles -o \"{OutputNameFormat}\" \"https://www.tiktok.com/@{AccountToScrape}\"";
             if (MaxItemsToScrape != 0)
             {
                 scrapeCommandBase += $" --maximum {MaxItemsToScrape}";

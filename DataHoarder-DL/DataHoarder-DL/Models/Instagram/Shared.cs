@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DataHoarder_DL.Models.Instagram
 {
-    class ThumbnailResource
+    public class ThumbnailResource
     {
         [JsonProperty]
         public int config_height;
@@ -17,7 +17,7 @@ namespace DataHoarder_DL.Models.Instagram
         [JsonProperty]
         public string src;
     }
-    class Owner
+    public class Owner
     {
         [JsonProperty]
         public string id;
@@ -26,14 +26,14 @@ namespace DataHoarder_DL.Models.Instagram
         [JsonProperty]
         public string username;
     }
-    class Dimensions
+    public class Dimensions
     {
         [JsonProperty]
         public int height;
         [JsonProperty]
         public int width;
     }
-    class IGData
+    public class IGData
     {
         [JsonProperty]
         public List<GraphImage> GraphImages;

@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 
 namespace DataHoarder_DL.Models.Instagram
 {
-    class GraphProfileInfo
+    public class GraphProfileInfo
     {
         [JsonProperty]
         public ProfileInfo info;
@@ -17,7 +17,7 @@ namespace DataHoarder_DL.Models.Instagram
         [JsonProperty]
         public string username;
     }
-    class ProfileInfo
+    public class ProfileInfo
     {
         [JsonProperty]
         public string biography;

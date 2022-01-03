@@ -12,7 +12,7 @@ using System.Net;
 
 namespace DataHoarder_DL.Controllers
 {
-    class InstagramController
+    public class InstagramController
     {
         string AuthUsername = "";
         string AuthPass = "";
@@ -76,7 +76,7 @@ namespace DataHoarder_DL.Controllers
         public int GetItemFileCount(string username)
         {
             string path = GetUserMediaPath(username);
-            if (String.IsNullOrEmpty(path))
+            if (String.IsNullOrEmpty(path) || !Directory.Exists(path) || Directory.GetFiles(path).Length == 0)
                 return 0;
             string[] files = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories);
             return files.Length;
@@ -155,11 +155,11 @@ namespace DataHoarder_DL.Controllers
         {
             logger.Info($"Begin fetching data for {username} with a maximum of {MaxToScrape}");
             //why the fuck am i validating the data before scraping it
-            Validate();
-            //TODO download of missing items using web request
             //ScrapeMetadata(username);
             ScrapeAllData(username, MaxToScrape);
             Parse(username);
+            Validate();
+            //TODO download of missing items using web request
 
             Globals.Settings.InstagramSettings.FollowedUsers.Find(x => x.AccountName == username).LastScraped = DateTime.Now;
             return false;
@@ -180,7 +180,7 @@ namespace DataHoarder_DL.Controllers
             {
                 logger.Debug("WorkingData was null, skipping data validation");
             }
-            if(ToDownload != null)
+            if(ToDownload != null && ToDownload.Count > 0)
             {
                 logger.Warn("Some files failed to validate and will be downloaded.");
                 DownloadMissing(ToDownload);

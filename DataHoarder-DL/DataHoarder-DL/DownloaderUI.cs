@@ -13,8 +13,10 @@ namespace DataHoarder_DL
 {
     public partial class DownloaderUI : Form
     {
-        public DownloaderUI()
+        Controllers.FormController formController;
+        public DownloaderUI(Controllers.FormController formController)
         {
+            this.formController = formController;
             InitializeComponent();
         }
         private void txtDLDir_TextChanged(object sender, EventArgs e)
@@ -31,21 +33,48 @@ namespace DataHoarder_DL
             nudIGMaxToScrape.Value = Globals.Settings.InstagramSettings.DefaultMaxScrape;
             txtTTScrapeAcct.Text = Globals.Settings.TikTokSettings.LastScrapedUser;
             nudTTMaxToScrape.Value = Globals.Settings.TikTokSettings.DefaultMaxScrape;
-            ig = new Controllers.InstagramController();
-            tt = new Controllers.TikTokController();
+            formController.ig = new Controllers.InstagramController();
+            formController.tt = new Controllers.TikTokController();
+            formController.yt = new Controllers.YoutubeController();
+            formController.queue = new Controllers.QueueController();
             IGPopulateFollowed();
             TTPopulateFollowed();
+            LoadQueue();
+        }
+        private void LoadQueue()
+        {
+            RefreshQueue();
+        }
+        private void RefreshQueue()
+        {
+            if (Globals.Settings.DLQueue == null)
+                return;
+            lsvQueue.HeaderStyle = ColumnHeaderStyle.Nonclickable;
+            lsvQueue.Items.Clear();
+            foreach (Models.Queue.InstagramItem instagramItem in Globals.Settings.DLQueue.IGQueueItems)
+            {
+                ListViewItem item = new ListViewItem(instagramItem.Order.ToString());
+                item.SubItems.Add("IG");
+                item.SubItems.Add(instagramItem.Username);
+                lsvQueue.Items.Add(item);
+            }
         }
         #region instagram
-        Controllers.InstagramController ig;
         private void btnIGScrape_Click(object sender, EventArgs e)
         {
             foreach(ListViewItem item in lsvIGFollowed.SelectedItems)
             {
-                ig.FetchData(item.Text, Convert.ToInt32(nudIGMaxToScrape.Value));
+                //ig.FetchData(item.Text, Convert.ToInt32(nudIGMaxToScrape.Value));
+                Models.Queue.InstagramItem instagramItem = new Models.Queue.InstagramItem()
+                {
+                    Username = item.Text,
+                    MaxToScrape = Convert.ToInt32(nudIGMaxToScrape.Value)
+                };
+                formController.queue.AddToQueue(instagramItem);
             }
-            IGPopulateFollowed();
-            Globals.Settings.Save();
+            RefreshQueue();
+            //IGPopulateFollowed();
+            //Globals.Settings.Save();
         }
 
         private void txtIGScrapeAcct_TextChanged(object sender, EventArgs e)
@@ -76,7 +105,7 @@ namespace DataHoarder_DL
             {
                 ListViewItem item = new ListViewItem(user.AccountName);
                 item.SubItems.Add(user.LastScraped.ToString());
-                item.SubItems.Add(ig.GetItemMetadataCount(user.AccountName).ToString());
+                item.SubItems.Add(formController.ig.GetItemMetadataCount(user.AccountName).ToString());
                 item.SubItems.Add(user.LastValidated.ToString());
                 lsvIGFollowed.Items.Add(item);
             }
@@ -88,13 +117,13 @@ namespace DataHoarder_DL
                 MessageBox.Show("This mode only supports a single selection.");
                 return;
             }
-            ig.Parse(lsvIGFollowed.SelectedItems[0].Text);
+            formController.ig.Parse(lsvIGFollowed.SelectedItems[0].Text);
             IGPopulateFollowed();
             Globals.Settings.Save();
         }
         private void btnIGValidate_Click(object sender, EventArgs e)
         {
-            ig.Validate();
+            formController.ig.Validate();
             IGPopulateFollowed();
             Globals.Settings.Save();
         }
@@ -132,7 +161,6 @@ namespace DataHoarder_DL
         }
         #endregion
         #region tiktok
-        Controllers.TikTokController tt;
         private void btnTTAddUser_Click(object sender, EventArgs e)
         {
             TTFollowedUser newUser = new TTFollowedUser(txtTTScrapeAcct.Text);
@@ -166,7 +194,7 @@ namespace DataHoarder_DL
         {
             foreach (ListViewItem item in lsvTTFollowed.SelectedItems)
             {
-                tt.FetchData(item.Text, Convert.ToInt32(nudTTMaxToScrape.Value));
+                formController.tt.FetchData(item.Text, Convert.ToInt32(nudTTMaxToScrape.Value));
             }
             TTPopulateFollowed();
             Globals.Settings.Save();
@@ -194,7 +222,7 @@ namespace DataHoarder_DL
             {
                 ListViewItem item = new ListViewItem(user.AccountName);
                 item.SubItems.Add(user.LastScraped.ToString());
-                item.SubItems.Add(tt.GetItemCount(user.AccountName).ToString());
+                item.SubItems.Add(formController.tt.GetItemFileCount(user.AccountName).ToString());
                 item.SubItems.Add(user.LastValidated.ToString());
                 lsvTTFollowed.Items.Add(item);
             }
@@ -208,9 +236,29 @@ namespace DataHoarder_DL
                 MessageBox.Show("This mode only supports a single selection.");
                 return;
             }
-            tt.Parse(lsvTTFollowed.SelectedItems[0].Text);
+            formController.tt.Parse(lsvTTFollowed.SelectedItems[0].Text);
             TTPopulateFollowed();
             Globals.Settings.Save();
+        }
+
+        private void btnYTScrapeVideo_Click(object sender, EventArgs e)
+        {
+            formController.yt.FetchData(txtYTURL.Text, Controllers.YTScrapeType.Video);
+        }
+
+        private void btnYTScrapePlaylist_Click(object sender, EventArgs e)
+        {
+            formController.yt.FetchData(txtYTURL.Text, Controllers.YTScrapeType.Playlist);
+        }
+
+        private void btnYTScrapeChannel_Click(object sender, EventArgs e)
+        {
+            formController.yt.FetchData(txtYTURL.Text, Controllers.YTScrapeType.Channel);
+        }
+
+        private void btnProcessQueue_Click(object sender, EventArgs e)
+        {
+            formController.queue.ProcessQueue(formController);
         }
     }
 }

@@ -35,6 +35,8 @@ namespace DataHoarder_DL
             this.chkVerbose = new System.Windows.Forms.CheckBox();
             this.btnProcessQueue = new System.Windows.Forms.Button();
             this.lsvQueue = new System.Windows.Forms.ListView();
+            this.columnHeader9 = new System.Windows.Forms.ColumnHeader();
+            this.columnHeader10 = new System.Windows.Forms.ColumnHeader();
             this.chkAllowOverwrite = new System.Windows.Forms.CheckBox();
             this.btnIGScrape = new System.Windows.Forms.Button();
             this.txtIGPass = new System.Windows.Forms.TextBox();
@@ -46,6 +48,13 @@ namespace DataHoarder_DL
             this.btnAddToQueue = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tpageYoutube = new System.Windows.Forms.TabPage();
+            this.label9 = new System.Windows.Forms.Label();
+            this.chkYTAudioOnly = new System.Windows.Forms.CheckBox();
+            this.btnYTScrapeChannel = new System.Windows.Forms.Button();
+            this.btnYTScrapePlaylist = new System.Windows.Forms.Button();
+            this.btnYTScrapeVideo = new System.Windows.Forms.Button();
+            this.label8 = new System.Windows.Forms.Label();
+            this.txtYTURL = new System.Windows.Forms.TextBox();
             this.tpageInstagram = new System.Windows.Forms.TabPage();
             this.button1 = new System.Windows.Forms.Button();
             this.btnIGRemoveUser = new System.Windows.Forms.Button();
@@ -60,6 +69,7 @@ namespace DataHoarder_DL
             this.label2 = new System.Windows.Forms.Label();
             this.nudIGMaxToScrape = new System.Windows.Forms.NumericUpDown();
             this.tpageTiktok = new System.Windows.Forms.TabPage();
+            this.btnTTParseOnly = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.nudTTMaxToScrape = new System.Windows.Forms.NumericUpDown();
             this.label7 = new System.Windows.Forms.Label();
@@ -75,8 +85,9 @@ namespace DataHoarder_DL
             this.rtbLogger = new System.Windows.Forms.RichTextBox();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.btnTTParseOnly = new System.Windows.Forms.Button();
+            this.columnHeader11 = new System.Windows.Forms.ColumnHeader();
             this.tabControl1.SuspendLayout();
+            this.tpageYoutube.SuspendLayout();
             this.tpageInstagram.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudIGMaxToScrape)).BeginInit();
             this.tpageTiktok.SuspendLayout();
@@ -128,16 +139,30 @@ namespace DataHoarder_DL
             this.btnProcessQueue.TabIndex = 6;
             this.btnProcessQueue.Text = "Process Queue";
             this.btnProcessQueue.UseVisualStyleBackColor = true;
+            this.btnProcessQueue.Click += new System.EventHandler(this.btnProcessQueue_Click);
             // 
             // lsvQueue
             // 
+            this.lsvQueue.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader11,
+            this.columnHeader9,
+            this.columnHeader10});
             this.lsvQueue.HideSelection = false;
             this.lsvQueue.Location = new System.Drawing.Point(1057, 27);
             this.lsvQueue.Name = "lsvQueue";
             this.lsvQueue.Size = new System.Drawing.Size(309, 539);
             this.lsvQueue.TabIndex = 7;
             this.lsvQueue.UseCompatibleStateImageBehavior = false;
-            this.lsvQueue.View = System.Windows.Forms.View.List;
+            this.lsvQueue.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeader9
+            // 
+            this.columnHeader9.Text = "Type";
+            // 
+            // columnHeader10
+            // 
+            this.columnHeader10.Text = "URI";
+            this.columnHeader10.Width = 240;
             // 
             // chkAllowOverwrite
             // 
@@ -232,12 +257,84 @@ namespace DataHoarder_DL
             // 
             // tpageYoutube
             // 
+            this.tpageYoutube.Controls.Add(this.label9);
+            this.tpageYoutube.Controls.Add(this.chkYTAudioOnly);
+            this.tpageYoutube.Controls.Add(this.btnYTScrapeChannel);
+            this.tpageYoutube.Controls.Add(this.btnYTScrapePlaylist);
+            this.tpageYoutube.Controls.Add(this.btnYTScrapeVideo);
+            this.tpageYoutube.Controls.Add(this.label8);
+            this.tpageYoutube.Controls.Add(this.txtYTURL);
             this.tpageYoutube.Location = new System.Drawing.Point(4, 24);
             this.tpageYoutube.Name = "tpageYoutube";
             this.tpageYoutube.Padding = new System.Windows.Forms.Padding(3);
             this.tpageYoutube.Size = new System.Drawing.Size(1031, 511);
             this.tpageYoutube.TabIndex = 1;
             this.tpageYoutube.Text = "Youtube";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(224, 3);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(61, 15);
+            this.label9.TabIndex = 15;
+            this.label9.Text = "Scrape As:";
+            // 
+            // chkYTAudioOnly
+            // 
+            this.chkYTAudioOnly.AutoSize = true;
+            this.chkYTAudioOnly.Location = new System.Drawing.Point(6, 54);
+            this.chkYTAudioOnly.Name = "chkYTAudioOnly";
+            this.chkYTAudioOnly.Size = new System.Drawing.Size(124, 19);
+            this.chkYTAudioOnly.TabIndex = 14;
+            this.chkYTAudioOnly.Text = "Scrape Audio Only";
+            this.chkYTAudioOnly.UseVisualStyleBackColor = true;
+            // 
+            // btnYTScrapeChannel
+            // 
+            this.btnYTScrapeChannel.Location = new System.Drawing.Point(224, 79);
+            this.btnYTScrapeChannel.Name = "btnYTScrapeChannel";
+            this.btnYTScrapeChannel.Size = new System.Drawing.Size(158, 23);
+            this.btnYTScrapeChannel.TabIndex = 13;
+            this.btnYTScrapeChannel.Text = "Channel";
+            this.btnYTScrapeChannel.UseVisualStyleBackColor = true;
+            this.btnYTScrapeChannel.Click += new System.EventHandler(this.btnYTScrapeChannel_Click);
+            // 
+            // btnYTScrapePlaylist
+            // 
+            this.btnYTScrapePlaylist.Location = new System.Drawing.Point(224, 50);
+            this.btnYTScrapePlaylist.Name = "btnYTScrapePlaylist";
+            this.btnYTScrapePlaylist.Size = new System.Drawing.Size(158, 23);
+            this.btnYTScrapePlaylist.TabIndex = 12;
+            this.btnYTScrapePlaylist.Text = "Playlist";
+            this.btnYTScrapePlaylist.UseVisualStyleBackColor = true;
+            this.btnYTScrapePlaylist.Click += new System.EventHandler(this.btnYTScrapePlaylist_Click);
+            // 
+            // btnYTScrapeVideo
+            // 
+            this.btnYTScrapeVideo.Location = new System.Drawing.Point(224, 21);
+            this.btnYTScrapeVideo.Name = "btnYTScrapeVideo";
+            this.btnYTScrapeVideo.Size = new System.Drawing.Size(158, 23);
+            this.btnYTScrapeVideo.TabIndex = 11;
+            this.btnYTScrapeVideo.Text = "Video";
+            this.btnYTScrapeVideo.UseVisualStyleBackColor = true;
+            this.btnYTScrapeVideo.Click += new System.EventHandler(this.btnYTScrapeVideo_Click);
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(6, 3);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(28, 15);
+            this.label8.TabIndex = 8;
+            this.label8.Text = "URL";
+            // 
+            // txtYTURL
+            // 
+            this.txtYTURL.Location = new System.Drawing.Point(6, 21);
+            this.txtYTURL.Name = "txtYTURL";
+            this.txtYTURL.Size = new System.Drawing.Size(196, 23);
+            this.txtYTURL.TabIndex = 9;
             // 
             // tpageInstagram
             // 
@@ -382,6 +479,16 @@ namespace DataHoarder_DL
             this.tpageTiktok.TabIndex = 2;
             this.tpageTiktok.Text = "TikTok";
             // 
+            // btnTTParseOnly
+            // 
+            this.btnTTParseOnly.Location = new System.Drawing.Point(410, 441);
+            this.btnTTParseOnly.Name = "btnTTParseOnly";
+            this.btnTTParseOnly.Size = new System.Drawing.Size(158, 23);
+            this.btnTTParseOnly.TabIndex = 33;
+            this.btnTTParseOnly.Text = "Parse Only";
+            this.btnTTParseOnly.UseVisualStyleBackColor = true;
+            this.btnTTParseOnly.Click += new System.EventHandler(this.btnTTParseOnly_Click);
+            // 
             // label3
             // 
             this.label3.AutoSize = true;
@@ -505,15 +612,9 @@ namespace DataHoarder_DL
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
-            // btnTTParseOnly
+            // columnHeader11
             // 
-            this.btnTTParseOnly.Location = new System.Drawing.Point(410, 441);
-            this.btnTTParseOnly.Name = "btnTTParseOnly";
-            this.btnTTParseOnly.Size = new System.Drawing.Size(158, 23);
-            this.btnTTParseOnly.TabIndex = 33;
-            this.btnTTParseOnly.Text = "Parse Only";
-            this.btnTTParseOnly.UseVisualStyleBackColor = true;
-            this.btnTTParseOnly.Click += new System.EventHandler(this.btnTTParseOnly_Click);
+            this.columnHeader11.Text = "Order";
             // 
             // DownloaderUI
             // 
@@ -535,6 +636,8 @@ namespace DataHoarder_DL
             this.Text = "DataHoarder Downloader";
             this.Load += new System.EventHandler(this.DownloaderUI_Load);
             this.tabControl1.ResumeLayout(false);
+            this.tpageYoutube.ResumeLayout(false);
+            this.tpageYoutube.PerformLayout();
             this.tpageInstagram.ResumeLayout(false);
             this.tpageInstagram.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudIGMaxToScrape)).EndInit();
@@ -597,6 +700,16 @@ namespace DataHoarder_DL
         private System.Windows.Forms.ColumnHeader columnHeader8;
         private System.Windows.Forms.Button btnTTScrape;
         private System.Windows.Forms.Button btnTTParseOnly;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.CheckBox chkYTAudioOnly;
+        private System.Windows.Forms.Button btnYTScrapeChannel;
+        private System.Windows.Forms.Button btnYTScrapePlaylist;
+        private System.Windows.Forms.Button btnYTScrapeVideo;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.TextBox txtYTURL;
+        private System.Windows.Forms.ColumnHeader columnHeader9;
+        private System.Windows.Forms.ColumnHeader columnHeader10;
+        private System.Windows.Forms.ColumnHeader columnHeader11;
     }
 }
 

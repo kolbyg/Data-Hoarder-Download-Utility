@@ -7,8 +7,12 @@ using System.Windows.Forms;
 
 namespace DataHoarder_DL.Controllers
 {
-    class FormController
+    public class FormController
     {
+        public Controllers.QueueController queue;
+        public Controllers.YoutubeController yt;
+        public Controllers.InstagramController ig;
+        public Controllers.TikTokController tt;
         public void Preload()
         {
             Preloader preloaderForm = new Preloader();
@@ -18,7 +22,7 @@ namespace DataHoarder_DL.Controllers
         {
             //DownloaderUI downloaderForm = new DownloaderUI();
             //downloaderForm.Show();
-            Application.Run(new DownloaderUI());
+            Application.Run(new DownloaderUI(this));
         }
     }
 }

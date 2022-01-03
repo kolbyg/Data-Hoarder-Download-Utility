@@ -8,32 +8,32 @@ using Newtonsoft.Json;
 
 namespace DataHoarder_DL.Models.Instagram
 {
-    class EdgeMediaPreviewLike
+    public class EdgeMediaPreviewLike
     {
         [JsonProperty]
         public int count;
     }
-    class EdgeMediaToCaption
+    public class EdgeMediaToCaption
     {
         [JsonProperty]
         public List<EdgeMediaToCaptionEdge> edges;
     }
-    class EdgeMediaToCaptionEdge
+    public class EdgeMediaToCaptionEdge
     {
         [JsonProperty]
         public EdgeMediaToCaptionNode node;
     }
-    class EdgeMediaToCaptionNode
+    public class EdgeMediaToCaptionNode
     {
         [JsonProperty]
         public string text;
     }
-    class EdgeMediaToComment
+    public class EdgeMediaToComment
     {
         [JsonProperty]
         public int count;
     }
-    class GraphImage
+    public class GraphImage
     {
         [JsonProperty]
         public string __typename;
