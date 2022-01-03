@@ -22,11 +22,7 @@ namespace DataHoarder_DL
     public class Queue
     {
         [JsonProperty]
-        public List<Models.Queue.InstagramItem> IGQueueItems = new List<Models.Queue.InstagramItem>();
-        [JsonProperty]
-        public List<Models.Queue.TikTokItem> TTQueueItems = new List<Models.Queue.TikTokItem>();
-        [JsonProperty]
-        public List<Models.Queue.YoutubeItem> YTQueueItems = new List<Models.Queue.YoutubeItem>();
+        public List<Models.Queue.QueueItem> QueueItems = new List<Models.Queue.QueueItem>();
         [JsonProperty]
         public bool ProcessAsync = false;
     }

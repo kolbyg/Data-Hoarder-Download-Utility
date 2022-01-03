@@ -35,6 +35,7 @@ namespace DataHoarder_DL
             this.chkVerbose = new System.Windows.Forms.CheckBox();
             this.btnProcessQueue = new System.Windows.Forms.Button();
             this.lsvQueue = new System.Windows.Forms.ListView();
+            this.columnHeader11 = new System.Windows.Forms.ColumnHeader();
             this.columnHeader9 = new System.Windows.Forms.ColumnHeader();
             this.columnHeader10 = new System.Windows.Forms.ColumnHeader();
             this.chkAllowOverwrite = new System.Windows.Forms.CheckBox();
@@ -85,7 +86,6 @@ namespace DataHoarder_DL
             this.rtbLogger = new System.Windows.Forms.RichTextBox();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.columnHeader11 = new System.Windows.Forms.ColumnHeader();
             this.tabControl1.SuspendLayout();
             this.tpageYoutube.SuspendLayout();
             this.tpageInstagram.SuspendLayout();
@@ -124,6 +124,7 @@ namespace DataHoarder_DL
             // chkVerbose
             // 
             this.chkVerbose.AutoSize = true;
+            this.chkVerbose.Enabled = false;
             this.chkVerbose.Location = new System.Drawing.Point(445, 597);
             this.chkVerbose.Name = "chkVerbose";
             this.chkVerbose.Size = new System.Drawing.Size(108, 19);
@@ -155,6 +156,10 @@ namespace DataHoarder_DL
             this.lsvQueue.UseCompatibleStateImageBehavior = false;
             this.lsvQueue.View = System.Windows.Forms.View.Details;
             // 
+            // columnHeader11
+            // 
+            this.columnHeader11.Text = "Order";
+            // 
             // columnHeader9
             // 
             this.columnHeader9.Text = "Type";
@@ -167,6 +172,7 @@ namespace DataHoarder_DL
             // chkAllowOverwrite
             // 
             this.chkAllowOverwrite.AutoSize = true;
+            this.chkAllowOverwrite.Enabled = false;
             this.chkAllowOverwrite.Location = new System.Drawing.Point(445, 572);
             this.chkAllowOverwrite.Name = "chkAllowOverwrite";
             this.chkAllowOverwrite.Size = new System.Drawing.Size(110, 19);
@@ -237,12 +243,14 @@ namespace DataHoarder_DL
             // 
             // btnAddToQueue
             // 
+            this.btnAddToQueue.Enabled = false;
             this.btnAddToQueue.Location = new System.Drawing.Point(948, 572);
             this.btnAddToQueue.Name = "btnAddToQueue";
             this.btnAddToQueue.Size = new System.Drawing.Size(103, 23);
             this.btnAddToQueue.TabIndex = 1;
             this.btnAddToQueue.Text = "Add to Queue";
             this.btnAddToQueue.UseVisualStyleBackColor = true;
+            this.btnAddToQueue.Click += new System.EventHandler(this.btnAddToQueue_Click);
             // 
             // tabControl1
             // 
@@ -611,10 +619,6 @@ namespace DataHoarder_DL
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
-            // 
-            // columnHeader11
-            // 
-            this.columnHeader11.Text = "Order";
             // 
             // DownloaderUI
             // 

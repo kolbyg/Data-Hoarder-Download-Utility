@@ -318,7 +318,7 @@ namespace DataHoarder_DL.Controllers
             //Delete Cache Dir
             if (Directory.GetFiles(CachePath).Length == 0 && Directory.GetDirectories(CachePath).Length == 0)
             {
-                Directory.Delete(CachePath, false);
+                //Directory.Delete(CachePath, false);
             }
 
         }

@@ -256,11 +256,11 @@ namespace DataHoarder_DL.Controllers
             logger.Debug("Output Name Format: " + OutputNameFormat);
 
             string scrapeCommandBase = $"-P \"{CachePath}\" --download-archive \"{HistoryPath + "\\" + AccountToScrape + ".history"}\" --write-info-json --write-playlist-metafiles -o \"{OutputNameFormat}\" \"https://www.tiktok.com/@{AccountToScrape}\"";
-            if (MaxItemsToScrape != 0)
+            /*if (MaxItemsToScrape != 0)
             {
                 scrapeCommandBase += $" --maximum {MaxItemsToScrape}";
                 logger.Debug("Adding max items to scrape");
-            }
+            }*/
             return scrapeCommandBase;
         }
         private void InvokeTTScraper(string ScrapeCommand)

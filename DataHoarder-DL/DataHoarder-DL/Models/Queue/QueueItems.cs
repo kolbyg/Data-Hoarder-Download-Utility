@@ -7,27 +7,23 @@ using Newtonsoft.Json;
 
 namespace DataHoarder_DL.Models.Queue
 {
-    public class TikTokItem
-    {
-        [JsonProperty]
-        public int Order;
-    }
-    public class InstagramItem
+    public class QueueItem
     {
         [JsonProperty]
         public int Order;
         [JsonProperty]
-        public string Username;
+        public string URI;
         [JsonProperty]
         public int MaxToScrape;
+        [JsonProperty]
+        public Controllers.YTScrapeType YTScrapeType;
+        [JsonProperty]
+        public ScrapeTypes ScrapeType;
     }
-    public class YoutubeItem
+    public enum ScrapeTypes
     {
-        [JsonProperty]
-        public int Order;
-        [JsonProperty]
-        public string Username;
-        [JsonProperty]
-        Controllers.YTScrapeType Type;
+        Youtube,
+        TikTok,
+        Instagram
     }
 }

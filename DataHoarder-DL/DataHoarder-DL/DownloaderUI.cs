@@ -51,11 +51,22 @@ namespace DataHoarder_DL
                 return;
             lsvQueue.HeaderStyle = ColumnHeaderStyle.Nonclickable;
             lsvQueue.Items.Clear();
-            foreach (Models.Queue.InstagramItem instagramItem in Globals.Settings.DLQueue.IGQueueItems)
+            foreach (Models.Queue.QueueItem queueItem in Globals.Settings.DLQueue.QueueItems)
             {
-                ListViewItem item = new ListViewItem(instagramItem.Order.ToString());
-                item.SubItems.Add("IG");
-                item.SubItems.Add(instagramItem.Username);
+                ListViewItem item = new ListViewItem(queueItem.Order.ToString());
+                switch (queueItem.ScrapeType)
+                {
+                    case Models.Queue.ScrapeTypes.TikTok:
+                        item.SubItems.Add("TT");
+                        break;
+                    case Models.Queue.ScrapeTypes.Youtube:
+                        item.SubItems.Add("IG");
+                        break;
+                    case Models.Queue.ScrapeTypes.Instagram:
+                        item.SubItems.Add("YT");
+                        break;
+                }
+                item.SubItems.Add(queueItem.URI);
                 lsvQueue.Items.Add(item);
             }
         }
@@ -64,13 +75,13 @@ namespace DataHoarder_DL
         {
             foreach(ListViewItem item in lsvIGFollowed.SelectedItems)
             {
-                //ig.FetchData(item.Text, Convert.ToInt32(nudIGMaxToScrape.Value));
-                Models.Queue.InstagramItem instagramItem = new Models.Queue.InstagramItem()
+                Models.Queue.QueueItem queueItem = new Models.Queue.QueueItem()
                 {
-                    Username = item.Text,
-                    MaxToScrape = Convert.ToInt32(nudIGMaxToScrape.Value)
+                    URI = item.Text,
+                    MaxToScrape = Convert.ToInt32(nudIGMaxToScrape.Value),
+                    ScrapeType = Models.Queue.ScrapeTypes.Instagram
                 };
-                formController.queue.AddToQueue(instagramItem);
+                formController.queue.AddToQueue(queueItem);
             }
             RefreshQueue();
             //IGPopulateFollowed();
@@ -194,10 +205,19 @@ namespace DataHoarder_DL
         {
             foreach (ListViewItem item in lsvTTFollowed.SelectedItems)
             {
-                formController.tt.FetchData(item.Text, Convert.ToInt32(nudTTMaxToScrape.Value));
+                //formController.tt.FetchData(item.Text, Convert.ToInt32(nudTTMaxToScrape.Value));
+
+                Models.Queue.QueueItem queueItem = new Models.Queue.QueueItem()
+                {
+                    URI = item.Text,
+                    MaxToScrape = Convert.ToInt32(nudIGMaxToScrape.Value),
+                    ScrapeType = Models.Queue.ScrapeTypes.TikTok
+                };
+                formController.queue.AddToQueue(queueItem);
             }
-            TTPopulateFollowed();
-            Globals.Settings.Save();
+            RefreshQueue();
+            //TTPopulateFollowed();
+            //Globals.Settings.Save();
         }
 
         private void txtTTScrapeAccount_TextChanged(object sender, EventArgs e)
@@ -243,22 +263,53 @@ namespace DataHoarder_DL
 
         private void btnYTScrapeVideo_Click(object sender, EventArgs e)
         {
-            formController.yt.FetchData(txtYTURL.Text, Controllers.YTScrapeType.Video);
-        }
+            //formController.yt.FetchData(txtYTURL.Text, Controllers.YTScrapeType.Video);
+            Models.Queue.QueueItem queueItem = new Models.Queue.QueueItem()
+            {
+                URI = txtYTURL.Text,
+                ScrapeType = Models.Queue.ScrapeTypes.Youtube,
+                YTScrapeType = Controllers.YTScrapeType.Video
+            };
+            formController.queue.AddToQueue(queueItem);
+        RefreshQueue();
+    }
 
         private void btnYTScrapePlaylist_Click(object sender, EventArgs e)
         {
-            formController.yt.FetchData(txtYTURL.Text, Controllers.YTScrapeType.Playlist);
+            //formController.yt.FetchData(txtYTURL.Text, Controllers.YTScrapeType.Playlist);
+            Models.Queue.QueueItem queueItem = new Models.Queue.QueueItem()
+            {
+                URI = txtYTURL.Text,
+                ScrapeType = Models.Queue.ScrapeTypes.Youtube,
+                YTScrapeType = Controllers.YTScrapeType.Playlist
+            };
+            formController.queue.AddToQueue(queueItem);
+            RefreshQueue();
         }
 
         private void btnYTScrapeChannel_Click(object sender, EventArgs e)
         {
-            formController.yt.FetchData(txtYTURL.Text, Controllers.YTScrapeType.Channel);
+            //formController.yt.FetchData(txtYTURL.Text, Controllers.YTScrapeType.Channel);
+            Models.Queue.QueueItem queueItem = new Models.Queue.QueueItem()
+            {
+                URI = txtYTURL.Text,
+                ScrapeType = Models.Queue.ScrapeTypes.Youtube,
+                YTScrapeType = Controllers.YTScrapeType.Channel
+            };
+            formController.queue.AddToQueue(queueItem);
+            RefreshQueue();
         }
 
         private void btnProcessQueue_Click(object sender, EventArgs e)
         {
             formController.queue.ProcessQueue(formController);
+            RefreshQueue();
+            IGPopulateFollowed();
+            TTPopulateFollowed();
+        }
+
+        private void btnAddToQueue_Click(object sender, EventArgs e)
+        {
         }
     }
 }
