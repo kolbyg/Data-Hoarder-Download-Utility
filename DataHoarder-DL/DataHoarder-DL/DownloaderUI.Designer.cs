@@ -32,7 +32,6 @@ namespace DataHoarder_DL
             this.txtDLDir = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.btnDLDirBrowse = new System.Windows.Forms.Button();
-            this.chkVerbose = new System.Windows.Forms.CheckBox();
             this.btnProcessQueue = new System.Windows.Forms.Button();
             this.lsvQueue = new System.Windows.Forms.ListView();
             this.columnHeader11 = new System.Windows.Forms.ColumnHeader();
@@ -86,6 +85,9 @@ namespace DataHoarder_DL
             this.rtbLogger = new System.Windows.Forms.RichTextBox();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.label10 = new System.Windows.Forms.Label();
+            this.columnHeader12 = new System.Windows.Forms.ColumnHeader();
             this.tabControl1.SuspendLayout();
             this.tpageYoutube.SuspendLayout();
             this.tpageInstagram.SuspendLayout();
@@ -120,17 +122,6 @@ namespace DataHoarder_DL
             this.btnDLDirBrowse.TabIndex = 3;
             this.btnDLDirBrowse.Text = "...";
             this.btnDLDirBrowse.UseVisualStyleBackColor = true;
-            // 
-            // chkVerbose
-            // 
-            this.chkVerbose.AutoSize = true;
-            this.chkVerbose.Enabled = false;
-            this.chkVerbose.Location = new System.Drawing.Point(445, 597);
-            this.chkVerbose.Name = "chkVerbose";
-            this.chkVerbose.Size = new System.Drawing.Size(108, 19);
-            this.chkVerbose.TabIndex = 5;
-            this.chkVerbose.Text = "Verbose Output";
-            this.chkVerbose.UseVisualStyleBackColor = true;
             // 
             // btnProcessQueue
             // 
@@ -403,6 +394,7 @@ namespace DataHoarder_DL
             this.columnHeader1,
             this.columnHeader2,
             this.columnHeader3,
+            this.columnHeader12,
             this.columnHeader4});
             this.lsvIGFollowed.HideSelection = false;
             this.lsvIGFollowed.Location = new System.Drawing.Point(407, 6);
@@ -415,7 +407,7 @@ namespace DataHoarder_DL
             // columnHeader1
             // 
             this.columnHeader1.Text = "Username";
-            this.columnHeader1.Width = 200;
+            this.columnHeader1.Width = 180;
             // 
             // columnHeader2
             // 
@@ -425,7 +417,7 @@ namespace DataHoarder_DL
             // columnHeader3
             // 
             this.columnHeader3.Text = "# Scraped";
-            this.columnHeader3.Width = 80;
+            this.columnHeader3.Width = 70;
             // 
             // columnHeader4
             // 
@@ -620,18 +612,46 @@ namespace DataHoarder_DL
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
+            // comboBox1
+            // 
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Items.AddRange(new object[] {
+            "Info",
+            "Debug",
+            "Trace"});
+            this.comboBox1.Location = new System.Drawing.Point(561, 591);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(121, 23);
+            this.comboBox1.TabIndex = 12;
+            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(561, 573);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(81, 15);
+            this.label10.TabIndex = 13;
+            this.label10.Text = "Logging Level";
+            // 
+            // columnHeader12
+            // 
+            this.columnHeader12.Text = "# Files";
+            this.columnHeader12.Width = 70;
+            // 
             // DownloaderUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1372, 835);
+            this.Controls.Add(this.label10);
+            this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.rtbLogger);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.btnAddToQueue);
             this.Controls.Add(this.chkAllowOverwrite);
             this.Controls.Add(this.lsvQueue);
             this.Controls.Add(this.btnProcessQueue);
-            this.Controls.Add(this.chkVerbose);
             this.Controls.Add(this.btnDLDirBrowse);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.txtDLDir);
@@ -660,7 +680,6 @@ namespace DataHoarder_DL
         private System.Windows.Forms.TextBox txtDLDir;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btnDLDirBrowse;
-        private System.Windows.Forms.CheckBox chkVerbose;
         private System.Windows.Forms.Button btnProcessQueue;
         private System.Windows.Forms.ListView lsvQueue;
         private System.Windows.Forms.CheckBox chkAllowOverwrite;
@@ -714,6 +733,9 @@ namespace DataHoarder_DL
         private System.Windows.Forms.ColumnHeader columnHeader9;
         private System.Windows.Forms.ColumnHeader columnHeader10;
         private System.Windows.Forms.ColumnHeader columnHeader11;
+        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.ColumnHeader columnHeader12;
     }
 }
 

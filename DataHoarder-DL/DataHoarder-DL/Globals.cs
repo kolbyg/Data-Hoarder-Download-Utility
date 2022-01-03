@@ -90,5 +90,7 @@ namespace DataHoarder_DL
         public bool DisclaimerAccepted = false;
         [JsonProperty]
         public Queue DLQueue = new Queue();
+        [JsonProperty]
+        public string LogLevel = "Info";
     }
 }

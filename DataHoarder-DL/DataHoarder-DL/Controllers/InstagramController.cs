@@ -76,7 +76,7 @@ namespace DataHoarder_DL.Controllers
         public int GetItemFileCount(string username)
         {
             string path = GetUserMediaPath(username);
-            if (String.IsNullOrEmpty(path) || !Directory.Exists(path) || Directory.GetFiles(path).Length == 0)
+            if (String.IsNullOrEmpty(path) || !Directory.Exists(path))
                 return 0;
             string[] files = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories);
             return files.Length;
@@ -399,7 +399,7 @@ namespace DataHoarder_DL.Controllers
             List<IGData> missingDataList = new List<IGData>();
             foreach (IGData curData in DataToValidate)
             {
-                logger.Debug("Currently processing profile: " + curData.GraphProfileInfo.username);
+                logger.Info("Currently processing profile: " + curData.GraphProfileInfo.username);
                 string UserMediaPath = GetUserMediaPath(curData.GraphProfileInfo.username);
                 IGData missingData = new IGData()
                 {
@@ -409,15 +409,15 @@ namespace DataHoarder_DL.Controllers
                 //UpdatePaths(curData);
                 if (curData.GraphImages != null)
                 {
-                    logger.Debug("GraphImages is not null, parsing...");
+                    logger.Trace("GraphImages is not null, parsing...");
                     foreach (GraphImage image in curData.GraphImages)
                     {
-                        logger.Debug("Working on Image ID: " + image.id);
+                        logger.Trace("Working on Image ID: " + image.id);
                         foreach (string url in image.urls)
                         {
-                            logger.Debug($"Working on Image URL {url}");
+                            logger.Trace($"Working on Image URL {url}");
                             string fileName = URLtoName(url);
-                            logger.Debug("Parsed unix timestamp as " + image.taken_at_timestamp);
+                            logger.Trace("Parsed unix timestamp as " + image.taken_at_timestamp);
                             DateTimeOffset dto = DateTimeOffset.FromUnixTimeSeconds(image.taken_at_timestamp);
                             if (!File.Exists(UserMediaPath + "\\images\\" + dto.ToString("yyyyMMdd") + "-" + fileName))
                             {
@@ -426,20 +426,20 @@ namespace DataHoarder_DL.Controllers
                             }
                             else
                             {
-                                logger.Debug("Found image URL, skipping...");
+                                logger.Trace("Found image URL, skipping...");
                             }
                         }
                     }
                 }
                 if (curData.GraphStories != null)
                 {
-                    logger.Debug("GraphStories is not null, parsing...");
+                    logger.Trace("GraphStories is not null, parsing...");
                     foreach (GraphStory story in curData.GraphStories)
                     {
-                        logger.Debug("Working on Story ID: " + story.id);
+                        logger.Trace("Working on Story ID: " + story.id);
                         foreach (string url in story.urls)
                         {
-                            logger.Debug($"Working on Story URL {url}");
+                            logger.Trace($"Working on Story URL {url}");
                             string fileName = URLtoName(url);
                             DateTimeOffset dto = DateTimeOffset.FromUnixTimeSeconds(story.taken_at_timestamp);
                             if (!File.Exists(UserMediaPath + "\\stories\\" + dto.ToString("yyyyMMdd") + "-" + fileName))
@@ -449,14 +449,14 @@ namespace DataHoarder_DL.Controllers
                             }
                             else
                             {
-                                logger.Debug("Found story URL, skipping...");
+                                logger.Trace("Found story URL, skipping...");
                             }
                         }
                     }
                 }
                 if (curData.GraphProfileInfo != null)
                 {
-                    logger.Debug("GraphProfileInfo is not null, parsing...");
+                    logger.Trace("GraphProfileInfo is not null, parsing...");
                     string fileName = URLtoName(curData.GraphProfileInfo.info.profile_pic_url);
                     if (!File.Exists(UserMediaPath + "\\profilepics\\" + fileName))
                     {
@@ -465,7 +465,7 @@ namespace DataHoarder_DL.Controllers
                     }
                     else
                     {
-                        logger.Debug("Found profile pic, skipping...");
+                        logger.Trace("Found profile pic, skipping...");
                     }
                 }
                 if (missingData.GraphImages.Count > 0 || missingData.GraphStories.Count > 0 || missingData.GraphProfileInfo != null)
@@ -490,10 +490,10 @@ namespace DataHoarder_DL.Controllers
         }
         private string URLtoName(string URL, bool IncludeDate = false)
         {
-            logger.Debug($"Translating URL to name original is {URL}");
+            logger.Trace($"Translating URL to name original is {URL}");
             string filename = URL.Remove(URL.IndexOf('?'));
             filename = filename.Substring(filename.LastIndexOf("/") + 1);
-            logger.Debug($"Resulting filename is {filename}");
+            logger.Trace($"Resulting filename is {filename}");
             return filename;
         }
         public List<IGData> ParseExistingData()

@@ -38,6 +38,7 @@ namespace DataHoarder_DL.Controllers
         public void ProcessQueue(Controllers.FormController formController)
         {
             //formController.LockForms();
+            logger.Info("Processing Queue, please wait...");
             List<Models.Queue.QueueItem> successfullyScraped = new List<Models.Queue.QueueItem>();
             foreach (Models.Queue.QueueItem queueItem in Globals.Settings.DLQueue.QueueItems)
             {
@@ -67,6 +68,7 @@ namespace DataHoarder_DL.Controllers
                 Globals.Settings.DLQueue.QueueItems.Remove(item);
             }
             Globals.Settings.Save();
+            logger.Info("Queue completed.");
         }
     }
 }
