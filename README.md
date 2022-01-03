@@ -24,3 +24,6 @@ To scrape an account, click them from the list and click scrape selected, this w
 #### Instagram
 To add an account, type/paste the name into the Account Name box, then click Add User.
 To scrape an account, click them from the list and click scrape selected, this will add it to the queue.
+
+### Notes
+The version of instagram-scraper included has been modified to allow wait periods between downloads.
