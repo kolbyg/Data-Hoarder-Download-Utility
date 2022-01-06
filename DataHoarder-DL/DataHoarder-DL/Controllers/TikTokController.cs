@@ -98,7 +98,7 @@ namespace DataHoarder_DL.Controllers
                 //Get all IDs from the history files
                 foreach (string file in Directory.GetFiles(HistoryPath))
                 {
-                    string AccountName = file.Remove(file.LastIndexOf('.')).Substring(file.LastIndexOf('\\')+1);
+                    string AccountName = file.Remove(file.LastIndexOf('.')).Substring(file.LastIndexOf('\\') + 1);
 
                     List<string> FileNames = Directory.GetFiles(GetUserMediaPath(AccountName), "*.*", SearchOption.AllDirectories).ToList();
                     List<string> FileIDs = new List<string>();
@@ -116,7 +116,7 @@ namespace DataHoarder_DL.Controllers
                     List<string> lines = File.ReadAllLines(file).ToList();
                     foreach (string line in lines)
                     {
-                        HistoryIDs.Add(line.Substring(line.LastIndexOf(' ')+1));
+                        HistoryIDs.Add(line.Substring(line.LastIndexOf(' ') + 1));
                     }
 
                     //Check for IDs that are in the history but NOT downloaded as files
@@ -199,16 +199,16 @@ namespace DataHoarder_DL.Controllers
         {
             try
             {
-                string PersonMediaDir = MediaPath +"\\" + username;
+                string PersonMediaDir = MediaPath + "\\" + username;
                 if (!Directory.Exists(PersonMediaDir)) { Directory.CreateDirectory(PersonMediaDir); }
                 string PersonMetadataDir = MetadataPath + "\\" + username;
                 if (!Directory.Exists(PersonMetadataDir)) { Directory.CreateDirectory(PersonMetadataDir); }
                 //Move history file first
                 //File.Move(CachePath + $"\\{username}.history", HistoryPath + $"\\{username}.history");
                 DirectoryInfo directoryInfo = new DirectoryInfo(CachePath);
-                foreach(FileInfo file in directoryInfo.EnumerateFiles())
+                foreach (FileInfo file in directoryInfo.EnumerateFiles())
                 {
-                    if(file.Extension == ".json")
+                    if (file.Extension == ".json")
                     {
                         if (File.Exists(PersonMetadataDir + "\\" + file.Name))
                         {
@@ -222,7 +222,7 @@ namespace DataHoarder_DL.Controllers
                     }
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 logger.Error(ex.Message);
             }
@@ -358,11 +358,19 @@ namespace DataHoarder_DL.Controllers
             p.StartInfo.WorkingDirectory = ytdlpPath;
             p.StartInfo.FileName = ytdlpPath + "\\" + "yt-dlp.exe";
             p.StartInfo.CreateNoWindow = false;
-            p.StartInfo.RedirectStandardError = false;
-            p.StartInfo.RedirectStandardOutput = false;
+            p.StartInfo.UseShellExecute = false;
+            p.StartInfo.RedirectStandardError = true;
+            p.StartInfo.RedirectStandardOutput = true;
             p.Start();
             logger.Debug("Waiting for scraping to complete");
+
+            string output = p.StandardOutput.ReadToEnd();
+            string error = p.StandardError.ReadToEnd();
             p.WaitForExit();
+            if (!String.IsNullOrEmpty(output))
+                logger.Debug(output);
+            if (!String.IsNullOrEmpty(error))
+                logger.Error(error);
         }
     }
 }

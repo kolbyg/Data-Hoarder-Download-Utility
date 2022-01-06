@@ -371,11 +371,18 @@ namespace DataHoarder_DL.Controllers
             p.StartInfo.WorkingDirectory = IGBinPath;
             p.StartInfo.FileName = "python.exe";
             p.StartInfo.CreateNoWindow = false;
+            p.StartInfo.UseShellExecute = false;
             p.StartInfo.RedirectStandardError = false;
             p.StartInfo.RedirectStandardOutput = false;
             p.Start();
             logger.Debug("Waiting for scraping to complete");
+            string output = p.StandardOutput.ReadToEnd();
+            string error = p.StandardError.ReadToEnd();
             p.WaitForExit();
+            if (!String.IsNullOrEmpty(output))
+                logger.Debug(output);
+            if (!String.IsNullOrEmpty(error))
+                logger.Error(error);
         }
         /*private void UpdatePaths(IGData Data, bool CreateDirectories = false)
         {
