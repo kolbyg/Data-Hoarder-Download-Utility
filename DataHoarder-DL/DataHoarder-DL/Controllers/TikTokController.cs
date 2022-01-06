@@ -57,46 +57,133 @@ namespace DataHoarder_DL.Controllers
         {
             return 0;
             //TODO
-                /**
-            string path = GetUserPath(username);
-            if (String.IsNullOrEmpty(path))
-                return 0;
-            TTData data = ParseTTData(path + "\\IG\\metadata\\_working.json");
-            int totalAssetCount = 0;
-            if (data.GraphImages != null)
+            /**
+        string path = GetUserPath(username);
+        if (String.IsNullOrEmpty(path))
+            return 0;
+        TTData data = ParseTTData(path + "\\IG\\metadata\\_working.json");
+        int totalAssetCount = 0;
+        if (data.GraphImages != null)
+        {
+            foreach (GraphImage image in data.GraphImages)
             {
-                foreach (GraphImage image in data.GraphImages)
+                foreach (string URL in image.urls)
                 {
-                    foreach (string URL in image.urls)
-                    {
-                        totalAssetCount++;
-                    }
+                    totalAssetCount++;
                 }
             }
-            if (data.GraphStories != null)
+        }
+        if (data.GraphStories != null)
+        {
+            foreach (GraphStory story in data.GraphStories)
             {
-                foreach (GraphStory story in data.GraphStories)
+                foreach (string URL in story.urls)
                 {
-                    foreach (string URL in story.urls)
-                    {
-                        totalAssetCount++;
-                    }
+                    totalAssetCount++;
                 }
             }
-            if (data.GraphProfileInfo != null && data.GraphProfileInfo.info.profile_pic_url != null)
+        }
+        if (data.GraphProfileInfo != null && data.GraphProfileInfo.info.profile_pic_url != null)
+        {
+            totalAssetCount++;
+        }
+        return totalAssetCount;*/
+        }
+        public bool Validate()
+        {
+            logger.Info("Begin data validation");
+            try
             {
-                totalAssetCount++;
+                List<string> MissingIDs = new List<string>();
+                //Get all IDs from the history files
+                foreach (string file in Directory.GetFiles(HistoryPath))
+                {
+                    string AccountName = file.Remove(file.LastIndexOf('.')).Substring(file.LastIndexOf('\\')+1);
+
+                    List<string> FileNames = Directory.GetFiles(GetUserMediaPath(AccountName), "*.*", SearchOption.AllDirectories).ToList();
+                    List<string> FileIDs = new List<string>();
+                    List<string> UserMissingIDs = new List<string>();
+                    List<string> HistoryIDs = new List<string>();
+                    //Parse filename list to trim off the non ID part
+                    foreach (string filename in FileNames)
+                    {
+                        string fileID;
+                        fileID = filename.Remove(filename.LastIndexOf(']'));
+                        fileID = fileID.Substring(fileID.LastIndexOf('[') + 1);
+                        FileIDs.Add(fileID);
+                    }
+
+                    List<string> lines = File.ReadAllLines(file).ToList();
+                    foreach (string line in lines)
+                    {
+                        HistoryIDs.Add(line.Substring(line.LastIndexOf(' ')+1));
+                    }
+
+                    //Check for IDs that are in the history but NOT downloaded as files
+                    foreach (string item in HistoryIDs)
+                    {
+                        if (FileIDs.Contains(item))
+                        {
+                            logger.Trace("History ID " + item + " validated successfully");
+                            continue;
+                        }
+                        else
+                        {
+                            logger.Info("Missing file detected! ID: " + item);
+                            UserMissingIDs.Add(item);
+
+                        }
+                    }
+                    //Check for IDs that are downloaded but NOT in the history
+                    foreach (string item in FileIDs)
+                    {
+                        if (HistoryIDs.Contains(item))
+                        {
+                            logger.Trace("File ID " + item + " validated successfully");
+                            continue;
+                        }
+                        else
+                        {
+                            logger.Info("Extra file detected! ID: " + item);
+                            //TODO not sure what to do here, possibly nothing.
+                        }
+                    }
+                    if (UserMissingIDs != null && UserMissingIDs.Count > 0)
+                    {
+                        MissingIDs.AddRange(UserMissingIDs);
+                        //TODO do something with the missing items, download them?DownloadMissing(ToDownload);
+                    }
+                    else
+                    {
+                        TTFollowedUser user = Globals.Settings.TikTokSettings.FollowedUsers.Find(x => x.AccountName == AccountName);
+                        if (user != null)
+                            user.LastValidated = DateTime.Now;
+                    }
+                }
+                logger.Info("Data validation has completed.");
+                if (MissingIDs != null && MissingIDs.Count > 0)
+                {
+                    logger.Warn("Some files failed to validate and will be downloaded.");
+                    //TODO do something with the missing items, download them?DownloadMissing(ToDownload);
+                    return false;
+                }
+                return true;
+
             }
-            return totalAssetCount;*/
+            catch (Exception ex)
+            {
+                logger.Error(ex.ToString());
+                return false;
+            }
         }
         public bool FetchData(string username, int MaxToScrape = 50)
         {
             logger.Info($"Begin fetching data for {username} with a maximum of {MaxToScrape}");
-            //Validate();
-            //TODO download of missing items using web request
             //ScrapeMetadata(username);
             ScrapeAllData(username, MaxToScrape);
             Parse(username);
+            Validate();
+            //TODO download of missing items using web request
 
             Globals.Settings.TikTokSettings.FollowedUsers.Find(x => x.AccountName == username).LastScraped = DateTime.Now;
             return false;
@@ -269,7 +356,7 @@ namespace DataHoarder_DL.Controllers
             Process p = new Process();
             p.StartInfo.Arguments = ScrapeCommand;
             p.StartInfo.WorkingDirectory = ytdlpPath;
-            p.StartInfo.FileName = "yt-dlp.exe";
+            p.StartInfo.FileName = ytdlpPath + "\\" + "yt-dlp.exe";
             p.StartInfo.CreateNoWindow = false;
             p.StartInfo.RedirectStandardError = false;
             p.StartInfo.RedirectStandardOutput = false;

@@ -63,6 +63,7 @@ namespace DataHoarder_DL
             this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
             this.columnHeader2 = new System.Windows.Forms.ColumnHeader();
             this.columnHeader3 = new System.Windows.Forms.ColumnHeader();
+            this.columnHeader12 = new System.Windows.Forms.ColumnHeader();
             this.columnHeader4 = new System.Windows.Forms.ColumnHeader();
             this.btnIGValidate = new System.Windows.Forms.Button();
             this.ptnIGParseOnly = new System.Windows.Forms.Button();
@@ -87,7 +88,7 @@ namespace DataHoarder_DL
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.label10 = new System.Windows.Forms.Label();
-            this.columnHeader12 = new System.Windows.Forms.ColumnHeader();
+            this.btnTTValidateOnly = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tpageYoutube.SuspendLayout();
             this.tpageInstagram.SuspendLayout();
@@ -419,6 +420,11 @@ namespace DataHoarder_DL
             this.columnHeader3.Text = "# Scraped";
             this.columnHeader3.Width = 70;
             // 
+            // columnHeader12
+            // 
+            this.columnHeader12.Text = "# Files";
+            this.columnHeader12.Width = 70;
+            // 
             // columnHeader4
             // 
             this.columnHeader4.Text = "Last Validated";
@@ -464,6 +470,7 @@ namespace DataHoarder_DL
             // tpageTiktok
             // 
             this.tpageTiktok.BackColor = System.Drawing.SystemColors.Control;
+            this.tpageTiktok.Controls.Add(this.btnTTValidateOnly);
             this.tpageTiktok.Controls.Add(this.btnTTParseOnly);
             this.tpageTiktok.Controls.Add(this.label3);
             this.tpageTiktok.Controls.Add(this.nudTTMaxToScrape);
@@ -634,10 +641,15 @@ namespace DataHoarder_DL
             this.label10.TabIndex = 13;
             this.label10.Text = "Logging Level";
             // 
-            // columnHeader12
+            // btnTTValidateOnly
             // 
-            this.columnHeader12.Text = "# Files";
-            this.columnHeader12.Width = 70;
+            this.btnTTValidateOnly.Location = new System.Drawing.Point(410, 470);
+            this.btnTTValidateOnly.Name = "btnTTValidateOnly";
+            this.btnTTValidateOnly.Size = new System.Drawing.Size(158, 23);
+            this.btnTTValidateOnly.TabIndex = 34;
+            this.btnTTValidateOnly.Text = "Validate Only";
+            this.btnTTValidateOnly.UseVisualStyleBackColor = true;
+            this.btnTTValidateOnly.Click += new System.EventHandler(this.btnTTValidateOnly_Click);
             // 
             // DownloaderUI
             // 
@@ -736,6 +748,7 @@ namespace DataHoarder_DL
         private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.ColumnHeader columnHeader12;
+        private System.Windows.Forms.Button btnTTValidateOnly;
     }
 }
 

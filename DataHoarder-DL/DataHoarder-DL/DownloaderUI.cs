@@ -361,5 +361,14 @@ namespace DataHoarder_DL
             LogManager.ReconfigExistingLoggers();
             logger.Info("Logger has been reconfigured.");
         }
+
+        private void btnTTValidateOnly_Click(object sender, EventArgs e)
+        {
+            logger.Debug("Begin validating TT data");
+            formController.tt.Validate();
+            TTPopulateFollowed();
+            Globals.Settings.Save();
+            logger.Debug("Completed validating TT data");
+        }
     }
 }

@@ -154,7 +154,6 @@ namespace DataHoarder_DL.Controllers
         public bool FetchData(string username, int MaxToScrape = 50)
         {
             logger.Info($"Begin fetching data for {username} with a maximum of {MaxToScrape}");
-            //why the fuck am i validating the data before scraping it
             //ScrapeMetadata(username);
             ScrapeAllData(username, MaxToScrape);
             Parse(username);

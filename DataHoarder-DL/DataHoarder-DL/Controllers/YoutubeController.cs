@@ -93,7 +93,7 @@ namespace DataHoarder_DL.Controllers
             Process p = new Process();
             p.StartInfo.Arguments = ScrapeCommand;
             p.StartInfo.WorkingDirectory = ytdlpPath;
-            p.StartInfo.FileName = "yt-dlp.exe";
+            p.StartInfo.FileName = ytdlpPath + "\\" + "yt-dlp.exe";
             p.StartInfo.CreateNoWindow = false;
             p.StartInfo.RedirectStandardError = false;
             p.StartInfo.RedirectStandardOutput = false;

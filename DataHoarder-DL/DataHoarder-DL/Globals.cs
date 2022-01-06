@@ -29,7 +29,7 @@ namespace DataHoarder_DL
     public class TikTokSettings
     {
         [JsonProperty]
-        public string LastScrapedUser = "donaldtrump";
+        public string LastScrapedUser = "arandomperson";
         [JsonProperty]
         public int DefaultMaxScrape = 20;
         [JsonProperty]
@@ -55,7 +55,7 @@ namespace DataHoarder_DL
         [JsonProperty]
         public string IGPass = "hunter2";
         [JsonProperty]
-        public string LastScrapedUser = "donaldtrump";
+        public string LastScrapedUser = "arandomperson";
         [JsonProperty]
         public int DefaultMaxScrape = 20;
         [JsonProperty]
