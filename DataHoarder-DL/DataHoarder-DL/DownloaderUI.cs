@@ -66,10 +66,10 @@ namespace DataHoarder_DL
                         item.SubItems.Add("TT");
                         break;
                     case Models.Queue.ScrapeTypes.Youtube:
-                        item.SubItems.Add("IG");
+                        item.SubItems.Add("YT");
                         break;
                     case Models.Queue.ScrapeTypes.Instagram:
-                        item.SubItems.Add("YT");
+                        item.SubItems.Add("IG");
                         break;
                 }
                 item.SubItems.Add(queueItem.URI);
@@ -153,9 +153,25 @@ namespace DataHoarder_DL
             Globals.Settings.Save();
             logger.Debug("Completed validating IG data");
         }
+        string TrimIllegalChars(string Input)
+        {
+            string Output = Input;
+            string[] IllegalChars = { "@" };
+            foreach (string c in IllegalChars)
+            {
+                Output = Output.Replace(c, "");
+                logger.Trace("Illegal charcaters found, trimming: " + c);
+            }
+            return Output;
+        }
         private void btnIGAddUser_Click(object sender, EventArgs e)
         {
-            IGFollowedUser newUser = new IGFollowedUser(txtIGScrapeAcct.Text);
+            string UserToAdd = txtIGScrapeAcct.Text;
+            if (String.IsNullOrWhiteSpace(UserToAdd)){
+                logger.Warn("Cannot add user containing only whitespace characters!");
+                return;
+            }
+            IGFollowedUser newUser = new IGFollowedUser(TrimIllegalChars(UserToAdd));
             if (Globals.Settings.InstagramSettings.FollowedUsers.Any(p => p.AccountName == newUser.AccountName))
                 MessageBox.Show("User already exists and will not be added");
             else
@@ -193,7 +209,13 @@ namespace DataHoarder_DL
         #region tiktok
         private void btnTTAddUser_Click(object sender, EventArgs e)
         {
-            TTFollowedUser newUser = new TTFollowedUser(txtTTScrapeAcct.Text);
+            string UserToAdd = txtTTScrapeAcct.Text;
+            if (String.IsNullOrWhiteSpace(UserToAdd))
+            {
+                logger.Warn("Cannot add user containing only whitespace characters!");
+                return;
+            }
+            TTFollowedUser newUser = new TTFollowedUser(TrimIllegalChars(txtTTScrapeAcct.Text));
             if (Globals.Settings.TikTokSettings.FollowedUsers.Any(p => p.AccountName == newUser.AccountName))
                 MessageBox.Show("User already exists and will not be added");
             else
@@ -220,7 +242,7 @@ namespace DataHoarder_DL
                     }
                 }
             }
-            IGPopulateFollowed();
+            TTPopulateFollowed();
             Globals.Settings.Save();
         }
 
@@ -292,11 +314,17 @@ namespace DataHoarder_DL
 
         private void btnYTScrapeVideo_Click(object sender, EventArgs e)
         {
+            string URLToScrape = txtYTURL.Text;
+            if (String.IsNullOrWhiteSpace(URLToScrape))
+            {
+                logger.Warn("Cannot scrape URL containing only whitespace characters!");
+                return;
+            }
             logger.Debug("Adding selected items to queue");
             //formController.yt.FetchData(txtYTURL.Text, Controllers.YTScrapeType.Video);
             Models.Queue.QueueItem queueItem = new Models.Queue.QueueItem()
             {
-                URI = txtYTURL.Text,
+                URI = URLToScrape,
                 ScrapeType = Models.Queue.ScrapeTypes.Youtube,
                 YTScrapeType = Controllers.YTScrapeType.Video
             };
@@ -306,11 +334,17 @@ namespace DataHoarder_DL
 
         private void btnYTScrapePlaylist_Click(object sender, EventArgs e)
         {
+            string URLToScrape = txtYTURL.Text;
+            if (String.IsNullOrWhiteSpace(URLToScrape))
+            {
+                logger.Warn("Cannot scrape URL containing only whitespace characters!");
+                return;
+            }
             logger.Debug("Adding selected items to queue");
             //formController.yt.FetchData(txtYTURL.Text, Controllers.YTScrapeType.Playlist);
             Models.Queue.QueueItem queueItem = new Models.Queue.QueueItem()
             {
-                URI = txtYTURL.Text,
+                URI = URLToScrape,
                 ScrapeType = Models.Queue.ScrapeTypes.Youtube,
                 YTScrapeType = Controllers.YTScrapeType.Playlist
             };
@@ -320,11 +354,17 @@ namespace DataHoarder_DL
 
         private void btnYTScrapeChannel_Click(object sender, EventArgs e)
         {
+            string URLToScrape = txtYTURL.Text;
+            if (String.IsNullOrWhiteSpace(URLToScrape))
+            {
+                logger.Warn("Cannot scrape URL containing only whitespace characters!");
+                return;
+            }
             logger.Debug("Adding selected items to queue");
             //formController.yt.FetchData(txtYTURL.Text, Controllers.YTScrapeType.Channel);
             Models.Queue.QueueItem queueItem = new Models.Queue.QueueItem()
             {
-                URI = txtYTURL.Text,
+                URI = URLToScrape,
                 ScrapeType = Models.Queue.ScrapeTypes.Youtube,
                 YTScrapeType = Controllers.YTScrapeType.Channel
             };
@@ -342,12 +382,26 @@ namespace DataHoarder_DL
             TTPopulateFollowed();
         }
 
-        private void btnAddToQueue_Click(object sender, EventArgs e)
+        private void btnRemoveFromQueue_Click(object sender, EventArgs e)
         {
+            foreach (ListViewItem selectedItem in lsvQueue.SelectedItems)
+            {
+                string itemString = selectedItem.SubItems[2].Text;
+                formController.queue.RemoveFromQueue(itemString);
+            }
+            RefreshQueue();
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if(comboBox1.SelectedItem.ToString() == "Trace")
+            {
+                DialogResult result = MessageBox.Show("Enabling trace logging causes a TON of extra log events and could take multiple minutes for each function. Only use this feature for debugging.\n\nContinue?", "Warning", MessageBoxButtons.YesNo);
+                if(result == DialogResult.No)
+                {
+                    comboBox1.SelectedItem = "Debug";
+                }
+            }
             Globals.Settings.LogLevel = comboBox1.SelectedItem.ToString();
             Globals.Settings.Save();
             ApplyNewLogLevel();
@@ -369,6 +423,20 @@ namespace DataHoarder_DL
             TTPopulateFollowed();
             Globals.Settings.Save();
             logger.Debug("Completed validating TT data");
+        }
+
+        private void btnDLDirBrowse_Click(object sender, EventArgs e)
+        {
+            fbdDLDir.SelectedPath = Globals.Settings.RootDownloadPath;
+            DialogResult result = fbdDLDir.ShowDialog();
+            if(result == DialogResult.OK)
+            {
+                Globals.Settings.RootDownloadPath = fbdDLDir.SelectedPath;
+                Globals.Settings.Save();
+                MessageBox.Show("Download path has been updated, the application will now exit, please relaunch to use the new path.");
+                Environment.Exit(0);
+            }
+
         }
     }
 }

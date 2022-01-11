@@ -26,6 +26,7 @@ namespace DataHoarder_DL.Controllers
         Logger logger = LogManager.GetCurrentClassLogger();
         public TikTokController()
         {
+            logger.Trace("Verifying and creating directories");
             DLDir = Globals.Settings.RootDownloadPath + "\\TT";
             if (!Directory.Exists(DLDir)) { Directory.CreateDirectory(DLDir); }
             MetadataPath = DLDir + "\\metadata";
@@ -40,6 +41,7 @@ namespace DataHoarder_DL.Controllers
         public int GetItemFileCount(string username)
         {
             string path = GetUserMediaPath(username);
+            logger.Trace("Getting count for user " + username + " at path " + path);
             if (String.IsNullOrEmpty(path) || !Directory.Exists(path) || Directory.GetFiles(path).Length == 0)
                 return 0;
             string[] files = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories);
@@ -96,10 +98,13 @@ namespace DataHoarder_DL.Controllers
             {
                 List<string> MissingIDs = new List<string>();
                 //Get all IDs from the history files
-                foreach (string file in Directory.GetFiles(HistoryPath))
+                foreach (TTFollowedUser User in Globals.Settings.TikTokSettings.FollowedUsers)//(string file in Directory.GetFiles(HistoryPath))
                 {
-                    string AccountName = file.Remove(file.LastIndexOf('.')).Substring(file.LastIndexOf('\\') + 1);
-
+                    string AccountName = User.AccountName; // = file.Remove(file.LastIndexOf('.')).Substring(file.LastIndexOf('\\') + 1);
+                    logger.Debug("Working on " + AccountName);
+                    string UserHistoryFile = HistoryPath + "\\" + AccountName + ".history";
+                    if (!File.Exists(UserHistoryFile))
+                        continue;
                     List<string> FileNames = Directory.GetFiles(GetUserMediaPath(AccountName), "*.*", SearchOption.AllDirectories).ToList();
                     List<string> FileIDs = new List<string>();
                     List<string> UserMissingIDs = new List<string>();
@@ -107,18 +112,22 @@ namespace DataHoarder_DL.Controllers
                     //Parse filename list to trim off the non ID part
                     foreach (string filename in FileNames)
                     {
+                        logger.Trace("Parsing filename: " + filename);
                         string fileID;
                         fileID = filename.Remove(filename.LastIndexOf(']'));
                         fileID = fileID.Substring(fileID.LastIndexOf('[') + 1);
                         FileIDs.Add(fileID);
+                        logger.Trace("Resulting name: " + fileID);
                     }
-
-                    List<string> lines = File.ReadAllLines(file).ToList();
+                    //Parse the history to get IDs
+                    List<string> lines = File.ReadAllLines(UserHistoryFile).ToList();
                     foreach (string line in lines)
                     {
+                        logger.Trace("Reading ID from history: " + line);
                         HistoryIDs.Add(line.Substring(line.LastIndexOf(' ') + 1));
                     }
-
+                    logger.Trace("History total lines: " + HistoryIDs.Count);
+                    logger.Trace("Files total lines: " + FileIDs.Count);
                     //Check for IDs that are in the history but NOT downloaded as files
                     foreach (string item in HistoryIDs)
                     {
@@ -150,11 +159,13 @@ namespace DataHoarder_DL.Controllers
                     }
                     if (UserMissingIDs != null && UserMissingIDs.Count > 0)
                     {
+                        logger.Trace("UserMissingIDs is not null, adding to MissingIDs");
                         MissingIDs.AddRange(UserMissingIDs);
                         //TODO do something with the missing items, download them?DownloadMissing(ToDownload);
                     }
                     else
                     {
+                        logger.Trace("Nothing missing, updating validation date");
                         TTFollowedUser user = Globals.Settings.TikTokSettings.FollowedUsers.Find(x => x.AccountName == AccountName);
                         if (user != null)
                             user.LastValidated = DateTime.Now;
@@ -344,7 +355,7 @@ namespace DataHoarder_DL.Controllers
 
             string scrapeCommandBase = $"-P \"{CachePath}\" --download-archive \"{HistoryPath + "\\" + AccountToScrape + ".history"}\" --write-info-json --write-playlist-metafiles -o \"{OutputNameFormat}\" \"https://www.tiktok.com/@{AccountToScrape}\"";
             /*if (MaxItemsToScrape != 0)
-            {
+            { TODO: Make this work, TT might not support it tho
                 scrapeCommandBase += $" --maximum {MaxItemsToScrape}";
                 logger.Debug("Adding max items to scrape");
             }*/
@@ -359,18 +370,18 @@ namespace DataHoarder_DL.Controllers
             p.StartInfo.FileName = ytdlpPath + "\\" + "yt-dlp.exe";
             p.StartInfo.CreateNoWindow = false;
             p.StartInfo.UseShellExecute = false;
-            p.StartInfo.RedirectStandardError = true;
-            p.StartInfo.RedirectStandardOutput = true;
+            //p.StartInfo.RedirectStandardError = true;
+            //p.StartInfo.RedirectStandardOutput = true;
             p.Start();
             logger.Debug("Waiting for scraping to complete");
-
-            string output = p.StandardOutput.ReadToEnd();
-            string error = p.StandardError.ReadToEnd();
+            //streamreader? async?
+            //string output = p.StandardOutput.ReadToEnd();
+            //string error = p.StandardError.ReadToEnd();
             p.WaitForExit();
-            if (!String.IsNullOrEmpty(output))
-                logger.Debug(output);
-            if (!String.IsNullOrEmpty(error))
-                logger.Error(error);
+            //if (!String.IsNullOrEmpty(output))
+           //     logger.Debug(output);
+            //if (!String.IsNullOrEmpty(error))
+            //    logger.Error(error);
         }
     }
 }

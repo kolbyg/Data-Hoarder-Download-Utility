@@ -45,7 +45,7 @@ namespace DataHoarder_DL
             this.label5 = new System.Windows.Forms.Label();
             this.txtIGScrapeAcct = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
-            this.btnAddToQueue = new System.Windows.Forms.Button();
+            this.btnRemoveFromQueue = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tpageYoutube = new System.Windows.Forms.TabPage();
             this.label9 = new System.Windows.Forms.Label();
@@ -70,6 +70,7 @@ namespace DataHoarder_DL
             this.label2 = new System.Windows.Forms.Label();
             this.nudIGMaxToScrape = new System.Windows.Forms.NumericUpDown();
             this.tpageTiktok = new System.Windows.Forms.TabPage();
+            this.btnTTValidateOnly = new System.Windows.Forms.Button();
             this.btnTTParseOnly = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.nudTTMaxToScrape = new System.Windows.Forms.NumericUpDown();
@@ -88,7 +89,7 @@ namespace DataHoarder_DL
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.label10 = new System.Windows.Forms.Label();
-            this.btnTTValidateOnly = new System.Windows.Forms.Button();
+            this.fbdDLDir = new System.Windows.Forms.FolderBrowserDialog();
             this.tabControl1.SuspendLayout();
             this.tpageYoutube.SuspendLayout();
             this.tpageInstagram.SuspendLayout();
@@ -123,6 +124,7 @@ namespace DataHoarder_DL
             this.btnDLDirBrowse.TabIndex = 3;
             this.btnDLDirBrowse.Text = "...";
             this.btnDLDirBrowse.UseVisualStyleBackColor = true;
+            this.btnDLDirBrowse.Click += new System.EventHandler(this.btnDLDirBrowse_Click);
             // 
             // btnProcessQueue
             // 
@@ -233,16 +235,15 @@ namespace DataHoarder_DL
             this.label4.TabIndex = 7;
             this.label4.Text = "Account Name";
             // 
-            // btnAddToQueue
+            // btnRemoveFromQueue
             // 
-            this.btnAddToQueue.Enabled = false;
-            this.btnAddToQueue.Location = new System.Drawing.Point(948, 572);
-            this.btnAddToQueue.Name = "btnAddToQueue";
-            this.btnAddToQueue.Size = new System.Drawing.Size(103, 23);
-            this.btnAddToQueue.TabIndex = 1;
-            this.btnAddToQueue.Text = "Add to Queue";
-            this.btnAddToQueue.UseVisualStyleBackColor = true;
-            this.btnAddToQueue.Click += new System.EventHandler(this.btnAddToQueue_Click);
+            this.btnRemoveFromQueue.Location = new System.Drawing.Point(919, 572);
+            this.btnRemoveFromQueue.Name = "btnRemoveFromQueue";
+            this.btnRemoveFromQueue.Size = new System.Drawing.Size(132, 23);
+            this.btnRemoveFromQueue.TabIndex = 1;
+            this.btnRemoveFromQueue.Text = "Remove From Queue";
+            this.btnRemoveFromQueue.UseVisualStyleBackColor = true;
+            this.btnRemoveFromQueue.Click += new System.EventHandler(this.btnRemoveFromQueue_Click);
             // 
             // tabControl1
             // 
@@ -486,6 +487,16 @@ namespace DataHoarder_DL
             this.tpageTiktok.TabIndex = 2;
             this.tpageTiktok.Text = "TikTok";
             // 
+            // btnTTValidateOnly
+            // 
+            this.btnTTValidateOnly.Location = new System.Drawing.Point(410, 470);
+            this.btnTTValidateOnly.Name = "btnTTValidateOnly";
+            this.btnTTValidateOnly.Size = new System.Drawing.Size(158, 23);
+            this.btnTTValidateOnly.TabIndex = 34;
+            this.btnTTValidateOnly.Text = "Validate Only";
+            this.btnTTValidateOnly.UseVisualStyleBackColor = true;
+            this.btnTTValidateOnly.Click += new System.EventHandler(this.btnTTValidateOnly_Click);
+            // 
             // btnTTParseOnly
             // 
             this.btnTTParseOnly.Location = new System.Drawing.Point(410, 441);
@@ -641,16 +652,6 @@ namespace DataHoarder_DL
             this.label10.TabIndex = 13;
             this.label10.Text = "Logging Level";
             // 
-            // btnTTValidateOnly
-            // 
-            this.btnTTValidateOnly.Location = new System.Drawing.Point(410, 470);
-            this.btnTTValidateOnly.Name = "btnTTValidateOnly";
-            this.btnTTValidateOnly.Size = new System.Drawing.Size(158, 23);
-            this.btnTTValidateOnly.TabIndex = 34;
-            this.btnTTValidateOnly.Text = "Validate Only";
-            this.btnTTValidateOnly.UseVisualStyleBackColor = true;
-            this.btnTTValidateOnly.Click += new System.EventHandler(this.btnTTValidateOnly_Click);
-            // 
             // DownloaderUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -660,7 +661,7 @@ namespace DataHoarder_DL
             this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.rtbLogger);
             this.Controls.Add(this.tabControl1);
-            this.Controls.Add(this.btnAddToQueue);
+            this.Controls.Add(this.btnRemoveFromQueue);
             this.Controls.Add(this.chkAllowOverwrite);
             this.Controls.Add(this.lsvQueue);
             this.Controls.Add(this.btnProcessQueue);
@@ -695,7 +696,7 @@ namespace DataHoarder_DL
         private System.Windows.Forms.Button btnProcessQueue;
         private System.Windows.Forms.ListView lsvQueue;
         private System.Windows.Forms.CheckBox chkAllowOverwrite;
-        private System.Windows.Forms.Button btnAddToQueue;
+        private System.Windows.Forms.Button btnRemoveFromQueue;
         private System.Windows.Forms.Button btnIGScrape;
         private System.Windows.Forms.TextBox txtIGPass;
         private System.Windows.Forms.Label label6;
@@ -749,6 +750,7 @@ namespace DataHoarder_DL
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.ColumnHeader columnHeader12;
         private System.Windows.Forms.Button btnTTValidateOnly;
+        private System.Windows.Forms.FolderBrowserDialog fbdDLDir;
     }
 }
 

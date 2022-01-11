@@ -30,6 +30,12 @@ namespace DataHoarder_DL.Controllers
 
         }
 
+        public void RemoveFromQueue(string Item)
+        {
+            Models.Queue.QueueItem item = Globals.Settings.DLQueue.QueueItems.Find(x => x.URI == Item);
+            Globals.Settings.DLQueue.QueueItems.Remove(item);
+            Globals.Settings.Save();
+        }
         public void AddToQueue(Models.Queue.QueueItem Item)
         {
             Globals.Settings.DLQueue.QueueItems.Add(Item);
