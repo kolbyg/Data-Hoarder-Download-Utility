@@ -342,7 +342,7 @@ namespace DataHoarder_DL.Controllers
             logger.Debug("WriteTimestampFile: " + WriteTimestampFile);
             logger.Debug("MaxItemsToScrape: " + MaxItemsToScrape);
             logger.Debug("namingTemplate: " + namingTemplate);
-            string scrapeCommandBase = $"app.py {AccountToScrape} -u {IGUsername} -p {IGPassword} --destination \"{DownloadPath}\" --template {namingTemplate}";
+            string scrapeCommandBase = $"app.py {AccountToScrape} -u {IGUsername} -p {IGPassword} --destination \"{DownloadPath}\" --template {namingTemplate} --random-delay";
             if (IncludeMediaMetadata) {
                 scrapeCommandBase += " --media-metadata";
                 logger.Debug("Adding media metadata");
