@@ -22,7 +22,8 @@ namespace DataHoarder_DL.Controllers
         {
             //DownloaderUI downloaderForm = new DownloaderUI();
             //downloaderForm.Show();
-            Application.Run(new DownloaderUI(this));
+            //Application.Run(new DownloaderUI(this));
+            Application.Run(new UnifiedUI(this));
         }
     }
 }
