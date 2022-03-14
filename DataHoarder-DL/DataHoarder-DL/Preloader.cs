@@ -34,6 +34,7 @@ namespace DataHoarder_DL
                 File.WriteAllText(Globals.SettingsPath,FileOperations.Json.SerializeSettings(new Settings()));
             }
             Globals.Settings = FileOperations.Json.ParseSettings(File.ReadAllText(Globals.SettingsPath));
+            Globals.Settings.Initialize();
         }
         private void LoadModules()
         {

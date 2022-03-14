@@ -19,6 +19,22 @@ namespace DataHoarder_DL
         public static string BinDir = Environment.CurrentDirectory + "\\bin";
         public static Settings Settings;
     }
+    public enum ScrapeType
+    {
+        Instagram,
+        TikTok,
+        YoutubeVideo,
+        YoutubePlaylist,
+        YoutubeChannel,
+        Unknown
+    }
+    public enum ItemStatus
+    {
+        Idle,
+        Pending,
+        Scraping,
+        Completed
+    }
     public class Queue
     {
         [JsonProperty]
@@ -74,12 +90,102 @@ namespace DataHoarder_DL
             AccountName = Username;
         }
     }
+    public class UnifiedQueueItem
+    {
+        [JsonProperty]
+        public Guid Id = Guid.NewGuid();
+        [JsonProperty]
+        public Guid ItemId;
+        [JsonProperty]
+        public ScrapeType ScrapeType;
+        [JsonProperty]
+        public int MaxToScrape;
+        [JsonProperty]
+        public string URI;
+        [JsonProperty]
+        public bool IsScraping = false;
+        [JsonProperty]
+        public bool ScrapingCompleted = false;
+    }
+    public class UnifiedScrapeItem
+    {
+        [JsonProperty]
+        public Guid Id = Guid.NewGuid();
+        [JsonProperty]
+        public string URI;
+        [JsonProperty]
+        public string ShortName;
+        [JsonProperty]
+        public ScrapeType ScrapeType;
+        [JsonProperty]
+        public DateTime LastScraped = DateTime.UnixEpoch;
+        [JsonProperty]
+        public DateTime LastValidated = DateTime.UnixEpoch;
+        [JsonProperty]
+        public int NumScraped = 0;
+        [JsonProperty]
+        public int NumFiles = 0;
+        [JsonProperty]
+        public long TotalSize = 0;
+        [JsonProperty]
+        public int ScrapeDaysMaximum = 30;
+        [JsonProperty]
+        public int MaxToScrape = 0;
+
+    }
     public class Settings
     {
         public void Save()
         {
             File.WriteAllText(Globals.SettingsPath, FileOperations.Json.SerializeSettings(Globals.Settings));
         }
+        public void Initialize()
+        {
+            if (SettingsVersion <= 1)
+            {
+                //Migrate
+                List<IGFollowedUser> IGUsersToRemove = new List<IGFollowedUser>();
+                List<TTFollowedUser> TTUsersToRemove = new List<TTFollowedUser>();
+                foreach (IGFollowedUser igFollowedUser in InstagramSettings.FollowedUsers)
+                {
+                    UnifiedScrapeItem item = new UnifiedScrapeItem
+                    {
+                        ScrapeType = ScrapeType.Instagram,
+                        URI = "https://instagram.com/" + igFollowedUser.AccountName + "/",
+                        ShortName = igFollowedUser.AccountName,
+                        LastScraped = igFollowedUser.LastScraped,
+                        LastValidated = igFollowedUser.LastValidated
+                    };
+                    ScrapeItems.Add(item);
+                    IGUsersToRemove.Add(igFollowedUser);
+                }
+                foreach(IGFollowedUser igFollowedUser in IGUsersToRemove)
+                {
+                    InstagramSettings.FollowedUsers.Remove(igFollowedUser);
+                }
+                foreach (TTFollowedUser ttFollowedUser in TikTokSettings.FollowedUsers)
+                {
+                    UnifiedScrapeItem item = new UnifiedScrapeItem
+                    {
+                        ScrapeType = ScrapeType.TikTok,
+                        URI = "https://www.tiktok.com/@" + ttFollowedUser.AccountName,
+                        ShortName =ttFollowedUser.AccountName,
+                        LastValidated = ttFollowedUser.LastValidated,
+                        LastScraped = ttFollowedUser.LastScraped
+                    };
+                    ScrapeItems.Add(item);
+                    TTUsersToRemove.Add(ttFollowedUser);
+                }
+                foreach(TTFollowedUser ttFollowedUser in TTUsersToRemove)
+                {
+                    TikTokSettings.FollowedUsers.Remove(ttFollowedUser);
+                }
+                SettingsVersion = 2;
+            }
+            Save();
+        }
+        [JsonProperty]
+        public int SettingsVersion = 1;
         [JsonProperty]
         public InstagramSettings InstagramSettings = new InstagramSettings();
         [JsonProperty]
@@ -91,6 +197,11 @@ namespace DataHoarder_DL
         [JsonProperty]
         public Queue DLQueue = new Queue();
         [JsonProperty]
+        public List<UnifiedQueueItem> UnifiedQueue = new List<UnifiedQueueItem>();
+        [JsonProperty]
         public string LogLevel = "Info";
+        [JsonProperty]
+        public List<UnifiedScrapeItem> ScrapeItems = new List<UnifiedScrapeItem>();
+
     }
 }
