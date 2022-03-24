@@ -23,7 +23,7 @@ namespace DataHoarder_DL.Controllers
         {
             Globals.Settings.DLQueue.YTQueueItems.Add(Item);
             Globals.Settings.Save();
-        }*/
+        }
         Logger logger = LogManager.GetCurrentClassLogger();
         public QueueController()
         {
@@ -53,13 +53,13 @@ namespace DataHoarder_DL.Controllers
                     switch (queueItem.ScrapeType)
                     {
                         case Models.Queue.ScrapeTypes.TikTok:
-                            formController.tt.FetchData(queueItem.URI, Convert.ToInt32(queueItem.MaxToScrape));
+                            //formController.tt.FetchData(queueItem.URI, Convert.ToInt32(queueItem.MaxToScrape));
                             break;
                         case Models.Queue.ScrapeTypes.Youtube:
-                            formController.yt.FetchData(queueItem.URI, queueItem.YTScrapeType);
+                            //formController.yt.FetchData(queueItem.URI, queueItem.YTScrapeType);
                             break;
                         case Models.Queue.ScrapeTypes.Instagram:
-                            formController.ig.FetchData(queueItem.URI, Convert.ToInt32(queueItem.MaxToScrape));
+                            //formController.ig.FetchData(queueItem.URI, Convert.ToInt32(queueItem.MaxToScrape));
                             break;
                     }
                     successfullyScraped.Add(queueItem);
@@ -75,6 +75,6 @@ namespace DataHoarder_DL.Controllers
             }
             Globals.Settings.Save();
             logger.Info("Queue completed.");
-        }
+        }*/
     }
 }

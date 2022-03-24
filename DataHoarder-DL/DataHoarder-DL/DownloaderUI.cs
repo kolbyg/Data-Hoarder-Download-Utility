@@ -14,7 +14,7 @@ namespace DataHoarder_DL
 
     public partial class DownloaderUI : Form
     {
-        Logger logger = LogManager.GetCurrentClassLogger();
+        /*Logger logger = LogManager.GetCurrentClassLogger();
         Controllers.FormController formController;
         public DownloaderUI(Controllers.FormController formController)
         {
@@ -290,7 +290,7 @@ namespace DataHoarder_DL
             {
                 ListViewItem item = new ListViewItem(user.AccountName);
                 item.SubItems.Add(user.LastScraped.ToString());
-                item.SubItems.Add(formController.tt.GetItemFileCount(user.AccountName).ToString());
+                //item.SubItems.Add(formController.tt.GetItemFileCount(user.AccountName).ToString());
                 item.SubItems.Add(user.LastValidated.ToString());
                 lsvTTFollowed.Items.Add(item);
             }
@@ -326,7 +326,7 @@ namespace DataHoarder_DL
             {
                 URI = URLToScrape,
                 ScrapeType = Models.Queue.ScrapeTypes.Youtube,
-                YTScrapeType = Controllers.YTScrapeType.Video
+                //YTScrapeType = Controllers.YTScrapeType.Video
             };
             formController.queue.AddToQueue(queueItem);
             RefreshQueue();
@@ -346,7 +346,7 @@ namespace DataHoarder_DL
             {
                 URI = URLToScrape,
                 ScrapeType = Models.Queue.ScrapeTypes.Youtube,
-                YTScrapeType = Controllers.YTScrapeType.Playlist
+                //YTScrapeType = Controllers.YTScrapeType.Playlist
             };
             formController.queue.AddToQueue(queueItem);
             RefreshQueue();
@@ -366,7 +366,7 @@ namespace DataHoarder_DL
             {
                 URI = URLToScrape,
                 ScrapeType = Models.Queue.ScrapeTypes.Youtube,
-                YTScrapeType = Controllers.YTScrapeType.Channel
+                //YTScrapeType = Controllers.YTScrapeType.Channel
             };
             formController.queue.AddToQueue(queueItem);
             RefreshQueue();
@@ -419,7 +419,7 @@ namespace DataHoarder_DL
         private void btnTTValidateOnly_Click(object sender, EventArgs e)
         {
             logger.Debug("Begin validating TT data");
-            formController.tt.Validate();
+            //formController.tt.Validate();
             TTPopulateFollowed();
             Globals.Settings.Save();
             logger.Debug("Completed validating TT data");
@@ -438,5 +438,6 @@ namespace DataHoarder_DL
             }
 
         }
+    }*/
     }
 }

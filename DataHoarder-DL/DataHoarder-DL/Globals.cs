@@ -35,13 +35,6 @@ namespace DataHoarder_DL
         Scraping,
         Completed
     }
-    public class Queue
-    {
-        [JsonProperty]
-        public List<Models.Queue.QueueItem> QueueItems = new List<Models.Queue.QueueItem>();
-        [JsonProperty]
-        public bool ProcessAsync = false;
-    }
     public class TikTokSettings
     {
         [JsonProperty]
@@ -116,6 +109,8 @@ namespace DataHoarder_DL
         [JsonProperty]
         public string ShortName;
         [JsonProperty]
+        public string FriendlyName;
+        [JsonProperty]
         public ScrapeType ScrapeType;
         [JsonProperty]
         public DateTime LastScraped = DateTime.UnixEpoch;
@@ -131,7 +126,48 @@ namespace DataHoarder_DL
         public int ScrapeDaysMaximum = 30;
         [JsonProperty]
         public int MaxToScrape = 0;
+        [JsonProperty]
+        public string ItemPath;
+        public void BuildDirectories()
+        {
+            switch (this.ScrapeType)
+            {
+                case ScrapeType.Instagram:
+                    if (string.IsNullOrEmpty(this.FriendlyName)) throw new Exception("FriendlyName cannot be null for this scrape type!");
+                    this.ItemPath = Globals.Settings.RootDownloadPath + "\\" + this.FriendlyName + "\\IG";
+                    break;
+                case ScrapeType.TikTok:
+                    if (string.IsNullOrEmpty(this.FriendlyName)) throw new Exception("FriendlyName cannot be null for this scrape type!");
+                    this.ItemPath = Globals.Settings.RootDownloadPath + "\\" + this.FriendlyName + "\\TT";
+                    break;
+                default:
+                    if (string.IsNullOrEmpty(this.FriendlyName)) throw new Exception("FriendlyName cannot be null for this scrape type!");
+                    this.ItemPath = Globals.Settings.RootDownloadPath + "\\" + this.FriendlyName + "\\Other";
+                    break;
 
+            }
+            if (!Directory.Exists(Globals.Settings.RootDownloadPath + "\\" + FriendlyName)) { Directory.CreateDirectory(Globals.Settings.RootDownloadPath + "\\" + FriendlyName); }
+        }
+        public async Task Validate()
+        {
+            await Controllers.ValidationController.ValidateObject(this);
+        }
+
+    }
+    public class SMTPSettings
+    {
+        [JsonProperty]
+        public string SMTPServer;
+        [JsonProperty]
+        public string SMTPUser;
+        [JsonProperty]
+        public string SMTPPass;
+        [JsonProperty]
+        public string SMTPFrom;
+        [JsonProperty]
+        public string SMSMTPToTPUser;
+        [JsonProperty]
+        public int SMTPPort;
     }
     public class Settings
     {
@@ -148,8 +184,9 @@ namespace DataHoarder_DL
                 List<TTFollowedUser> TTUsersToRemove = new List<TTFollowedUser>();
                 foreach (IGFollowedUser igFollowedUser in InstagramSettings.FollowedUsers)
                 {
-                    UnifiedScrapeItem item = new UnifiedScrapeItem
+                    UnifiedScrapeItem item = new UnifiedScrapeItem()
                     {
+                        FriendlyName = igFollowedUser.AccountName,
                         ScrapeType = ScrapeType.Instagram,
                         URI = "https://instagram.com/" + igFollowedUser.AccountName + "/",
                         ShortName = igFollowedUser.AccountName,
@@ -157,6 +194,7 @@ namespace DataHoarder_DL
                         LastValidated = igFollowedUser.LastValidated
                     };
                     ScrapeItems.Add(item);
+                    item.BuildDirectories();
                     IGUsersToRemove.Add(igFollowedUser);
                 }
                 foreach(IGFollowedUser igFollowedUser in IGUsersToRemove)
@@ -165,8 +203,9 @@ namespace DataHoarder_DL
                 }
                 foreach (TTFollowedUser ttFollowedUser in TikTokSettings.FollowedUsers)
                 {
-                    UnifiedScrapeItem item = new UnifiedScrapeItem
+                    UnifiedScrapeItem item = new UnifiedScrapeItem()
                     {
+                        FriendlyName = ttFollowedUser.AccountName,
                         ScrapeType = ScrapeType.TikTok,
                         URI = "https://www.tiktok.com/@" + ttFollowedUser.AccountName,
                         ShortName =ttFollowedUser.AccountName,
@@ -174,6 +213,7 @@ namespace DataHoarder_DL
                         LastScraped = ttFollowedUser.LastScraped
                     };
                     ScrapeItems.Add(item);
+                    item.BuildDirectories();
                     TTUsersToRemove.Add(ttFollowedUser);
                 }
                 foreach(TTFollowedUser ttFollowedUser in TTUsersToRemove)
@@ -195,13 +235,33 @@ namespace DataHoarder_DL
         [JsonProperty]
         public bool DisclaimerAccepted = false;
         [JsonProperty]
-        public Queue DLQueue = new Queue();
-        [JsonProperty]
         public List<UnifiedQueueItem> UnifiedQueue = new List<UnifiedQueueItem>();
         [JsonProperty]
         public string LogLevel = "Info";
         [JsonProperty]
         public List<UnifiedScrapeItem> ScrapeItems = new List<UnifiedScrapeItem>();
+        [JsonProperty]
+        public SMTPSettings SMTPSettings = new SMTPSettings();
+        [JsonProperty]
+        public string WebhookURI;
+        [JsonProperty]
+        public string LogFolder;
+        [JsonProperty]
+        public bool LogErrorsToSMTP = false;
+        [JsonProperty]
+        public bool LogErrorsToWebhook = false;
+        [JsonProperty]
+        public bool Autoscrape = false;
+        [JsonProperty]
+        public bool Autoqueue = false;
+        [JsonProperty]
+        public int AutoscrapeEveryHours = 24;
+        [JsonProperty]
+        public bool RedirectScraperOutput = false;
+        [JsonProperty]
+        public bool AllowOverwrite = false;
+        [JsonProperty]
+        public bool AllowSimultaniousScraping = false;
 
     }
 }

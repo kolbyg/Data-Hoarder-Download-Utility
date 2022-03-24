@@ -11,7 +11,7 @@ using System.Net;
 
 namespace DataHoarder_DL.Controllers
 {
-    public class TikTokController
+    internal class AO3Controller
     {
         //string AuthUsername = "";
         //string AuthPass = "";
@@ -35,6 +35,25 @@ namespace DataHoarder_DL.Controllers
             CachePath = ScrapeItem.ItemPath + "\\cache";
             if (!Directory.Exists(CachePath)) { Directory.CreateDirectory(CachePath); }
         }
+        private void DownloadEPUB(string URL)
+        {
+
+        }
+        private List<string> ParseURI(string URI)
+        {
+            List<string> URIs = new List<string>;
+            if (URI.Contains("archiveofourown.org/works")) {
+                URIs.Add(URI);
+            }
+            else URIs.AddRange(GetWorkIDList(URI));
+            return URIs;
+        }
+        private string[] GetWorkIDList(string URI)
+        {
+
+            string scrapeCommand = BuildScrapeCommand(username, CachePath, MaxItemsToScrape);
+            InvokeTTScraper(scrapeCommand);
+        }
         public async Task<bool> FetchData(UnifiedQueueItem QueueItem)
         {
             try
@@ -44,11 +63,8 @@ namespace DataHoarder_DL.Controllers
                 BuildPaths(ScrapeItem);
                 QueueItem.IsScraping = true;
                 //ScrapeMetadata(username);
-                ScrapeAllData(QueueItem.URI, QueueItem.MaxToScrape);
-                Parse(QueueItem.URI);
+                ScrapeAllData(QueueItem.URI);
                 await ScrapeItem.Validate();
-                //Validate();
-                //TODO download of missing items using web request
                 ScrapeItem.LastScraped = DateTime.Now;
                 QueueItem.IsScraping = false;
                 return true;
@@ -60,45 +76,14 @@ namespace DataHoarder_DL.Controllers
             }
 
         }
-        public bool Parse(string username)
+        public bool ScrapeAllData(string URI)
         {
-            logger.Info("Begin processing cached data");
-            ProcessCache(username);
-            return false;
-        }
-        private void ProcessCache(string username)
-        {
-            try
+            logger.Info($"Begin data scraping for {URI}");
+            List<string> URIs = ParseURI(URI);
+            foreach(string s in URIs)
             {
-                //Move history file first
-                //File.Move(CachePath + $"\\{username}.history", HistoryPath + $"\\{username}.history");
-                DirectoryInfo directoryInfo = new DirectoryInfo(CachePath);
-                foreach (FileInfo file in directoryInfo.EnumerateFiles())
-                {
-                    if (file.Extension == ".json")
-                    {
-                        if (File.Exists(MetadataPath + "\\" + file.Name))
-                        {
-                            File.Move(MetadataPath + "\\" + file.Name, MetadataPath + "\\" + file.Name + "." + DateTime.Now.ToString("yyyyMMddHHmmss"));
-                        }
-                        file.MoveTo(MetadataPath + "\\" + file.Name);
-                    }
-                    else
-                    {
-                        file.MoveTo(MediaPath + "\\" + file.Name);
-                    }
-                }
+                DownloadEPUB(s);
             }
-            catch (Exception ex)
-            {
-                logger.Error(ex.Message);
-            }
-        }
-        public bool ScrapeAllData(string username, int MaxItemsToScrape)
-        {
-            logger.Info($"Begin data scraping for {username}, maximum {MaxItemsToScrape} items");
-            string scrapeCommand = BuildScrapeCommand(username, CachePath, MaxItemsToScrape);
-            InvokeTTScraper(scrapeCommand);
             return false;
         }
         private string BuildScrapeCommand(string AccountToScrape, string DownloadPath, int MaxItemsToScrape)
@@ -132,7 +117,7 @@ namespace DataHoarder_DL.Controllers
             //string error = p.StandardError.ReadToEnd();
             p.WaitForExit();
             //if (!String.IsNullOrEmpty(output))
-           //     logger.Debug(output);
+            //     logger.Debug(output);
             //if (!String.IsNullOrEmpty(error))
             //    logger.Error(error);
         }

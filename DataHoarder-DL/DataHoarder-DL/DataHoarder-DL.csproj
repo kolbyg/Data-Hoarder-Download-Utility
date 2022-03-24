@@ -15,19 +15,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="flag-green_24.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="flag-red_24.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Update="nlog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Web\" />
   </ItemGroup>
 
   <ItemGroup>

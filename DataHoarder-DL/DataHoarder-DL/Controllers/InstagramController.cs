@@ -14,6 +14,7 @@ namespace DataHoarder_DL.Controllers
 {
     public class InstagramController
     {
+        static string cookieJar = Globals.Settings.RootDownloadPath + "\\ig.cookie";
         string AuthUsername = "";
         string AuthPass = "";
         string DLDir = Environment.CurrentDirectory;
@@ -22,86 +23,12 @@ namespace DataHoarder_DL.Controllers
         string MediaPath;// = Environment.CurrentDirectory + "\\media";
         string CachePath;// = Environment.CurrentDirectory + "\\IGCache";
         string IGBinPath = Globals.BinDir + "\\instagram-scraper";
-        string PersonRootDir;// = Environment.CurrentDirectory + "\\UNKNOWN";
         bool Overwrite = false;
-        Logger logger = LogManager.GetCurrentClassLogger();
+        static Logger logger = LogManager.GetCurrentClassLogger();
         public InstagramController()
         {
             AuthUsername = Globals.Settings.InstagramSettings.IGUsername;
             AuthPass = Globals.Settings.InstagramSettings.IGPass;
-            DLDir = Globals.Settings.RootDownloadPath + "\\IG";
-            if(!Directory.Exists(DLDir)) { Directory.CreateDirectory(DLDir); }
-            TimestampPath = DLDir + "\\timestamps";
-            if (!Directory.Exists(TimestampPath)) { Directory.CreateDirectory(TimestampPath); }
-            MetadataPath = DLDir + "\\metadata";
-            if (!Directory.Exists(MetadataPath)) { Directory.CreateDirectory(MetadataPath); }
-            MediaPath = DLDir + "\\media";
-            if (!Directory.Exists(MediaPath)) { Directory.CreateDirectory(MediaPath); }
-            CachePath = DLDir + "\\cache";
-            if (!Directory.Exists(CachePath)) { Directory.CreateDirectory(CachePath); }
-        }
-        public int GetItemMetadataCount(string username)
-        {
-            string path = GetUserMetadataPath(username);
-            if (String.IsNullOrEmpty(path) || !Directory.Exists(path) || Directory.GetFiles(path).Length == 0)
-                return 0;
-            IGData data = ParseIGData(path + "\\_working.json");
-            int totalAssetCount = 0;
-            if(data.GraphImages != null)
-            {
-                foreach(GraphImage image in data.GraphImages)
-                {
-                    foreach (string URL in image.urls)
-                    {
-                        totalAssetCount++;
-                    }
-                }
-            }
-            if(data.GraphStories !=null)
-            {
-                foreach (GraphStory story in data.GraphStories)
-                {
-                    foreach (string URL in story.urls)
-                    {
-                        totalAssetCount++;
-                    }
-                }
-            }
-            if(data.GraphProfileInfo != null && data.GraphProfileInfo.info.profile_pic_url != null)
-            {
-                totalAssetCount++;
-            }
-            return totalAssetCount;
-        }
-        public int GetItemFileCount(string username)
-        {
-            string path = GetUserMediaPath(username);
-            if (String.IsNullOrEmpty(path) || !Directory.Exists(path))
-                return 0;
-            string[] files = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories);
-            return files.Length;
-        }
-        private string GetUserMetadataPath(string username)
-        {
-            return MetadataPath + "\\" + username;
-            //Removed due to restructuring to use acct name for folder
-            /*List<string> d = Directory.GetDirectories(DLDir).ToList();
-            foreach(string dir in d)
-            {
-                if (dir.Contains("IGCache"))
-                    continue;
-                string metadataDir = dir + "\\IG\\metadata\\_working.json";
-                IGData data = ParseIGData(metadataDir);
-                if(data.GraphProfileInfo.username == username)
-                {
-                    return dir;
-                }
-            }
-            return "";*/
-        }
-        private string GetUserMediaPath(string username)
-        {
-            return MediaPath + "\\" + username;
         }
         private string CombineUserJsonData(string username, string[] paths)
         {
@@ -146,45 +73,49 @@ namespace DataHoarder_DL.Controllers
                 GraphStories = combinedData.GraphStories.GroupBy(x => x.id).Select(group => group.First()).ToList(),
                 GraphProfileInfo = combinedData.GraphProfileInfo
             };
-            string combinedpath = $"{GetUserMetadataPath(username)}\\_working.json";
+            string combinedpath = $"{MetadataPath}\\_working.json";
             logger.Debug($"Final list created, saving to {combinedpath}");
             File.WriteAllText(combinedpath, SerializeIGData(noDupes));
             return combinedpath;
         }
-        public bool FetchData(string username, int MaxToScrape = 50)
+        public void BuildPaths(UnifiedScrapeItem ScrapeItem)
         {
-            logger.Info($"Begin fetching data for {username} with a maximum of {MaxToScrape}");
-            //ScrapeMetadata(username);
-            ScrapeAllData(username, MaxToScrape);
-            Parse(username);
-            Validate();
-            //TODO download of missing items using web request
+            logger.Trace("Verifying and creating directories");
 
-            Globals.Settings.InstagramSettings.FollowedUsers.Find(x => x.AccountName == username).LastScraped = DateTime.Now;
-            return false;
-
+            if (!Directory.Exists(ScrapeItem.ItemPath)) { Directory.CreateDirectory(ScrapeItem.ItemPath); }
+            MetadataPath = ScrapeItem.ItemPath + "\\metadata";
+            if (!Directory.Exists(MetadataPath)) { Directory.CreateDirectory(MetadataPath); }
+            TimestampPath = ScrapeItem.ItemPath + "\\timestamps";
+            if (!Directory.Exists(TimestampPath)) { Directory.CreateDirectory(TimestampPath); }
+            MediaPath = ScrapeItem.ItemPath + "\\media";
+            if (!Directory.Exists(MediaPath)) { Directory.CreateDirectory(MediaPath); }
+            CachePath = ScrapeItem.ItemPath + "\\cache";
+            if (!Directory.Exists(CachePath)) { Directory.CreateDirectory(CachePath); }
         }
-        public bool Validate()
+        public async Task<bool> FetchData(UnifiedQueueItem QueueItem)
         {
-            logger.Info("Begin data validation");
-            List<IGData> WorkingData = ParseExistingData();
-            logger.Debug("Initializing list for missing file storage");
-            List<IGData> ToDownload = null;
-            if (WorkingData != null)
+            try
             {
-                logger.Debug("WorkingData was not null, validating all data");
-                ToDownload = ValidateDownloads(WorkingData);
+                logger.Info($"Begin fetching data for {QueueItem.URI} with a maximum of {QueueItem.MaxToScrape}");
+                UnifiedScrapeItem ScrapeItem = Globals.Settings.ScrapeItems.Find(x => x.Id == QueueItem.ItemId);
+                BuildPaths(ScrapeItem);
+                QueueItem.IsScraping = true;
+                ScrapeAllData(QueueItem.URI, QueueItem.MaxToScrape);
+                Parse(QueueItem.URI);
+                await ScrapeItem.Validate();
+                //await ScrapeItem.Validate();
+                //TODO download of missing items using web request
+
+                ScrapeItem.LastScraped = DateTime.Now;
+                QueueItem.IsScraping = false;
+                return true;
             }
-            else
+            catch(Exception ex)
             {
-                logger.Debug("WorkingData was null, skipping data validation");
+                logger.Error(ex.ToString());
+                return false;
             }
-            if(ToDownload != null && ToDownload.Count > 0)
-            {
-                logger.Warn("Some files failed to validate and will be downloaded.");
-                DownloadMissing(ToDownload);
-            }
-            return false;
+
         }
         private void DownloadMissing(List<IGData> MissingData)
         {
@@ -227,8 +158,8 @@ namespace DataHoarder_DL.Controllers
             //Process Directory Naming
             IGData tempdata = ParseIGData(CachedMetadata);
             //UpdatePaths(tempdata, true);
-            string UserMediaPath = GetUserMediaPath(tempdata.GraphProfileInfo.username);
-            string UserMetadataPath = GetUserMetadataPath(tempdata.GraphProfileInfo.username);
+            string UserMediaPath = MediaPath;
+            string UserMetadataPath = MetadataPath;
 
             //Process Media
             if (!Directory.Exists(UserMediaPath)) { Directory.CreateDirectory(UserMediaPath); }
@@ -342,7 +273,8 @@ namespace DataHoarder_DL.Controllers
             logger.Debug("WriteTimestampFile: " + WriteTimestampFile);
             logger.Debug("MaxItemsToScrape: " + MaxItemsToScrape);
             logger.Debug("namingTemplate: " + namingTemplate);
-            string scrapeCommandBase = $"app.py {AccountToScrape} -u {IGUsername} -p {IGPassword} --destination \"{DownloadPath}\" --template {namingTemplate} --random-delay";
+            logger.Debug("CookieJar: " + cookieJar);
+            string scrapeCommandBase = $"app.py {AccountToScrape} -u {IGUsername} -p {IGPassword} --destination \"{DownloadPath}\" --cookiejar \"{cookieJar}\" --template \"{namingTemplate}\"";
             if (IncludeMediaMetadata) {
                 scrapeCommandBase += " --media-metadata";
                 logger.Debug("Adding media metadata");
@@ -399,102 +331,7 @@ namespace DataHoarder_DL.Controllers
             MediaPath = PersonRootDir + "\\media";
             logger.Debug($"Directories updated, PersonRootDir is now {PersonRootDir}");
         }*/
-        public List<IGData> ValidateDownloads(List<IGData> DataToValidate)
-        {
-            logger.Debug("Begining to validate downloads with loaded metadata");
-            List<IGData> missingDataList = new List<IGData>();
-            foreach (IGData curData in DataToValidate)
-            {
-                logger.Info("Currently processing profile: " + curData.GraphProfileInfo.username);
-                string UserMediaPath = GetUserMediaPath(curData.GraphProfileInfo.username);
-                IGData missingData = new IGData()
-                {
-                    GraphImages = new List<GraphImage>(),
-                    GraphStories = new List<GraphStory>()
-                };
-                //UpdatePaths(curData);
-                if (curData.GraphImages != null)
-                {
-                    logger.Trace("GraphImages is not null, parsing...");
-                    foreach (GraphImage image in curData.GraphImages)
-                    {
-                        logger.Trace("Working on Image ID: " + image.id);
-                        foreach (string url in image.urls)
-                        {
-                            logger.Trace($"Working on Image URL {url}");
-                            string fileName = URLtoName(url);
-                            logger.Trace("Parsed unix timestamp as " + image.taken_at_timestamp);
-                            DateTimeOffset dto = DateTimeOffset.FromUnixTimeSeconds(image.taken_at_timestamp);
-                            if (!File.Exists(UserMediaPath + "\\images\\" + dto.ToString("yyyyMMdd") + "-" + fileName))
-                            {
-                                logger.Warn("URL from Image ID " + image.id + " is missing, adding to list.");
-                                missingData.GraphImages.Add(image);
-                            }
-                            else
-                            {
-                                logger.Trace("Found image URL, skipping...");
-                            }
-                        }
-                    }
-                }
-                if (curData.GraphStories != null)
-                {
-                    logger.Trace("GraphStories is not null, parsing...");
-                    foreach (GraphStory story in curData.GraphStories)
-                    {
-                        logger.Trace("Working on Story ID: " + story.id);
-                        foreach (string url in story.urls)
-                        {
-                            logger.Trace($"Working on Story URL {url}");
-                            string fileName = URLtoName(url);
-                            DateTimeOffset dto = DateTimeOffset.FromUnixTimeSeconds(story.taken_at_timestamp);
-                            if (!File.Exists(UserMediaPath + "\\stories\\" + dto.ToString("yyyyMMdd") + "-" + fileName))
-                            {
-                                logger.Warn("URL from Story ID " + story.id + " is missing, adding to list.");
-                                missingData.GraphStories.Add(story);
-                            }
-                            else
-                            {
-                                logger.Trace("Found story URL, skipping...");
-                            }
-                        }
-                    }
-                }
-                if (curData.GraphProfileInfo != null)
-                {
-                    logger.Trace("GraphProfileInfo is not null, parsing...");
-                    string fileName = URLtoName(curData.GraphProfileInfo.info.profile_pic_url);
-                    if (!File.Exists(UserMediaPath + "\\profilepics\\" + fileName))
-                    {
-                        logger.Warn("Profile picture is missing, adding to list.");
-                        missingData.GraphProfileInfo = curData.GraphProfileInfo;
-                    }
-                    else
-                    {
-                        logger.Trace("Found profile pic, skipping...");
-                    }
-                }
-                if (missingData.GraphImages.Count > 0 || missingData.GraphStories.Count > 0 || missingData.GraphProfileInfo != null)
-                {
-                    logger.Info("Missing files were detected.");
-                    if (missingData.GraphProfileInfo == null)
-                    {
-                        logger.Debug("Adding profile info");
-                        missingData.GraphProfileInfo = curData.GraphProfileInfo;
-                    }
-                    missingDataList.Add(missingData);
-                }
-                else
-                {
-                    IGFollowedUser user = Globals.Settings.InstagramSettings.FollowedUsers.Find(x => x.AccountName == curData.GraphProfileInfo.username);
-                    if (user != null)
-                        user.LastValidated = DateTime.Now;
-                }
-            }
-            logger.Debug("Returning list");
-            return missingDataList;
-        }
-        private string URLtoName(string URL, bool IncludeDate = false)
+        internal static string URLtoName(string URL, bool IncludeDate = false)
         {
             logger.Trace($"Translating URL to name original is {URL}");
             string filename = URL.Remove(URL.IndexOf('?'));
@@ -502,27 +339,12 @@ namespace DataHoarder_DL.Controllers
             logger.Trace($"Resulting filename is {filename}");
             return filename;
         }
-        public List<IGData> ParseExistingData()
-        {
-            logger.Debug("Begin parsing all _working.json files");
-            List<IGData> WorkingData = new List<IGData>();
-            //string RelativeMetadataDir = "\\IG\\metadata\\_working.json";
-            foreach (string directory in Directory.GetDirectories(MetadataPath))
-            {
-                logger.Debug($"Begin processing directory {directory}");
-                IGData curData = ParseIGData(directory + "\\_working.json");//RelativeMetadataDir);
-                WorkingData.Add(curData);
-                logger.Debug("Data added to list");
-            }
-            logger.Debug("Finished parsing metadata, returning...");
-            return WorkingData;
-        }
-        public IGData ParseIGData(string path)
+        public static  IGData ParseIGData(string path)
         {
             string jsondata = File.ReadAllText(path);
             return FileOperations.Json.ParseMetadata(jsondata);
         }
-        public string SerializeIGData(IGData data)
+        public static  string SerializeIGData(IGData data)
         {
             return FileOperations.Json.SerializeMetadata(data);
         }

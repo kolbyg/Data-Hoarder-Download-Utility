@@ -9,12 +9,6 @@ using NLog;
 
 namespace DataHoarder_DL.Controllers
 {
-    public enum YTScrapeType
-    {
-        Video,
-        Channel,
-        Playlist
-    }
     public class YoutubeController
     {
         //string AuthUsername = "";
@@ -27,42 +21,42 @@ namespace DataHoarder_DL.Controllers
         string CachePath;
         string ytdlpPath = Globals.BinDir + "\\yt-dlp";
         string ffmpegPath = Globals.BinDir + "\\ffmpeg";
-        bool Overwrite = false;
         Logger logger = LogManager.GetCurrentClassLogger();
         public YoutubeController()
         {
-            DLDir = Globals.Settings.RootDownloadPath + "\\YT";
-            if (!Directory.Exists(DLDir)) { Directory.CreateDirectory(DLDir); }
-            //MetadataPath = DLDir + "\\metadata";
-            //if (!Directory.Exists(MetadataPath)) { Directory.CreateDirectory(MetadataPath); }
-            HistoryPath = DLDir + "\\history";
+        }
+        public void BuildPaths(UnifiedScrapeItem ScrapeItem)
+        {
+            logger.Trace("Verifying and creating directories");
+
+            if (!Directory.Exists(ScrapeItem.ItemPath)) { Directory.CreateDirectory(ScrapeItem.ItemPath); }
+            MetadataPath = ScrapeItem.ItemPath + "\\metadata";
+            if (!Directory.Exists(MetadataPath)) { Directory.CreateDirectory(MetadataPath); }
+            HistoryPath = ScrapeItem.ItemPath + "\\history";
             if (!Directory.Exists(HistoryPath)) { Directory.CreateDirectory(HistoryPath); }
-            //MediaPath = DLDir + "\\media";
-            //if (!Directory.Exists(MediaPath)) { Directory.CreateDirectory(MediaPath); }
-            CachePath = DLDir + "\\cache";
+            MediaPath = ScrapeItem.ItemPath + "\\media";
+            if (!Directory.Exists(MediaPath)) { Directory.CreateDirectory(MediaPath); }
+            CachePath = ScrapeItem.ItemPath + "\\cache";
             if (!Directory.Exists(CachePath)) { Directory.CreateDirectory(CachePath); }
         }
-        public bool FetchData(string username, YTScrapeType ScrapeType = YTScrapeType.Video)
+        public async Task<bool> FetchData(UnifiedQueueItem QueueItem)
         {
-            logger.Info($"Begin fetching data for {username} with method: {ScrapeType}");
-            //Validate();
-            //TODO download of missing items using web request
-            //ScrapeMetadata(username);
-            ScrapeAllData(username, ScrapeType);
-            //Parse(username);
-
-            //Globals.Settings.TikTokSettings.FollowedUsers.Find(x => x.AccountName == username).LastScraped = DateTime.Now;
+            logger.Info($"Begin fetching data for {QueueItem.URI} with method: {QueueItem.ScrapeType}");
+            UnifiedScrapeItem ScrapeItem = Globals.Settings.ScrapeItems.Find(x => x.Id == QueueItem.ItemId);
+            BuildPaths(ScrapeItem);
+            ScrapeAllData(QueueItem.URI, QueueItem.ScrapeType);
+            //TODO, organize this somehow
             return false;
 
         }
-        public bool ScrapeAllData(string URL, YTScrapeType ScrapeType)
+        public bool ScrapeAllData(string URL, ScrapeType ScrapeType)
         {
             logger.Info($"Begin data scraping for {URL}, method: {ScrapeType}");
             string scrapeCommand = BuildScrapeCommand(URL, CachePath, ScrapeType);
             InvokeYTScraper(scrapeCommand);
             return false;
         }
-        private string BuildScrapeCommand(string URL, string DownloadPath, YTScrapeType ScrapeType)
+        private string BuildScrapeCommand(string URL, string DownloadPath, ScrapeType ScrapeType)
         {
             string OutputNameFormat = "[%(id)s].%(ext)s";
             logger.Debug("Building scrape command");
@@ -74,13 +68,13 @@ namespace DataHoarder_DL.Controllers
             string scrapeCommandBase = "";
             switch (ScrapeType)
             {
-                case YTScrapeType.Video:
+                case ScrapeType.YoutubeVideo:
                     scrapeCommandBase += $"-P \"{CachePath}\" -f bestvideo+bestaudio/best -ciw --ffmpeg-location \"{ffmpegPath}\" --download-archive \"{HistoryPath + "\\" + HistoryFile}\" --write-info-json --write-playlist-metafiles -o \"{OutputNameFormat}\" \"{URL}\"";
                     break;
-                case YTScrapeType.Channel:
+                case ScrapeType.YoutubeChannel:
                     scrapeCommandBase += $"-P \"{CachePath}\" -f bestvideo+bestaudio/best -ciw --ffmpeg-location \"{ffmpegPath}\" --download-archive \"{HistoryPath + "\\" + HistoryFile}\" --write-info-json --write-playlist-metafiles -o \"{OutputNameFormat}\" \"{URL}\"";
                     break;
-                case YTScrapeType.Playlist:
+                case ScrapeType.YoutubePlaylist:
                     scrapeCommandBase += $"-P \"{CachePath}\" -f bestvideo+bestaudio/best -ciw --ffmpeg-location \"{ffmpegPath}\" --download-archive \"{HistoryPath + "\\" + HistoryFile}\" --write-info-json --write-playlist-metafiles -o \"{OutputNameFormat}\" --yes-playlist \"{URL}\"";
                     break;
             }

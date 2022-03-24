@@ -10,25 +10,29 @@ namespace DataHoarder_DL.Controllers
     {
         TikTokController tikTokController;
         InstagramController instagramController;
+        YoutubeController youtubeController;
         bool PauseQueue = false;
         internal ScrapeController()
         {
             tikTokController = new TikTokController();
             instagramController = new InstagramController();
+            youtubeController = new YoutubeController();
         }
         internal async void Pause()
         {
             PauseQueue = true;
         }
-        internal async void ProcessQueue()
+        internal async Task ProcessQueue()
         {
             //split the queue into one queue per type
             List<UnifiedQueueItem> Queue = Globals.Settings.UnifiedQueue;
             List<UnifiedQueueItem> IGQueue = Queue.FindAll(x => x.ScrapeType == ScrapeType.Instagram);
             List<UnifiedQueueItem> TTQueue = Queue.FindAll(x => x.ScrapeType == ScrapeType.TikTok);
-            ScrapeIG(IGQueue);
-            ScrapeTT(TTQueue);
-            await WaitForQueue();
+            List<UnifiedQueueItem> YTQueue = Queue.FindAll(x => (x.ScrapeType == ScrapeType.YoutubePlaylist) || (x.ScrapeType == ScrapeType.YoutubeVideo) || (x.ScrapeType == ScrapeType.YoutubeChannel));
+            await Task.WhenAll(ScrapeIG(IGQueue), ScrapeTT(TTQueue), ScrapeYT(YTQueue));
+            //ScrapeTT(TTQueue);
+            //ScrapeYT(YTQueue);
+            //await WaitForQueue();
             CleanupQueue();
         }
         private void CleanupQueue()
@@ -37,12 +41,16 @@ namespace DataHoarder_DL.Controllers
             foreach (UnifiedQueueItem queueItem in Globals.Settings.UnifiedQueue)
             {
                 if (queueItem.ScrapingCompleted)
+                {
                     ItemsCompleted.Add(queueItem);
+
+                }
             }
             foreach(UnifiedQueueItem completedQueueItem in ItemsCompleted)
             {
                 Globals.Settings.UnifiedQueue.Remove(completedQueueItem);
             }
+            Globals.Settings.Save();
         }
         private async Task WaitForQueue()
         {
@@ -60,18 +68,28 @@ namespace DataHoarder_DL.Controllers
                 await Task.Delay(1000);
             }
         }
-        private async void ScrapeIG(List<UnifiedQueueItem> Queue)
+        private async Task ScrapeIG(List<UnifiedQueueItem> Queue)
         {
             foreach(UnifiedQueueItem item in Queue)
             {
-                await Task.Run(() => instagramController.FetchData(item.URI));
+                if (await instagramController.FetchData(item))
+                    item.ScrapingCompleted = true;
             }
         }
-        private async void ScrapeTT(List<UnifiedQueueItem> Queue)
+        private async Task ScrapeYT(List<UnifiedQueueItem> Queue)
         {
-            foreach(UnifiedQueueItem item in Queue)
+            foreach (UnifiedQueueItem item in Queue)
             {
-                await Task.Run(() => tikTokController.FetchData(item.URI));
+                if(await youtubeController.FetchData(item))
+                item.ScrapingCompleted = true;
+            }
+        }
+        private async Task ScrapeTT(List<UnifiedQueueItem> Queue)
+        {
+            foreach (UnifiedQueueItem item in Queue)
+            {
+                if (await tikTokController.FetchData(item))
+                    item.ScrapingCompleted = true;
             }
         }
         internal void Kill()

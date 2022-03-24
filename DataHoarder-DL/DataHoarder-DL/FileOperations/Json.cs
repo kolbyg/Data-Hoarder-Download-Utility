@@ -22,7 +22,7 @@ namespace DataHoarder_DL.FileOperations
             //
                 //Utilities.Utilities.Logger.Error(ex.Message);
                 //Utilities.Utilities.Logger.Debug(ex.InnerException);
-                return null;
+                //return null;
            // }
         }
         public static string SerializeMetadata(Models.Instagram.IGData data)
@@ -52,7 +52,7 @@ namespace DataHoarder_DL.FileOperations
             //
             //Utilities.Utilities.Logger.Error(ex.Message);
             //Utilities.Utilities.Logger.Debug(ex.InnerException);
-            return null;
+            //return null;
             // }
         }
         public static string SerializeSettings(Settings data)

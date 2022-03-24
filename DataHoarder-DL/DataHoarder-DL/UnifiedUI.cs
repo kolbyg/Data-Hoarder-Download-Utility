@@ -15,8 +15,8 @@ namespace DataHoarder_DL
     {
         //TODO timers for autoadd, autoscrape
         //TODO Multiline text
-        //TODO URI Parser
         //TODO Settings page
+        //TODO rework logging
         Controllers.FormController formController;
         Controllers.ScrapeController scrapeController;
         public UnifiedUI(Controllers.FormController formController)
@@ -28,6 +28,7 @@ namespace DataHoarder_DL
 
         private void UnifiedUI_Load(object sender, EventArgs e)
         {
+            NLog.Windows.Forms.RichTextBoxTarget.ReInitializeAllTextboxes(this);
             LoadListView();
         }
         private void LoadListView()
@@ -67,11 +68,12 @@ namespace DataHoarder_DL
         }
         private ListViewItem.ListViewSubItem FormatListviewTimestamp(string Text, bool IsErrorState)
         {
-            Color BackColor = Color.White;
-            Color ForeColor = Color.Black;
+            Color BackColor = Color.Black;
+            Color ForeColor = Color.Lime;
             if(IsErrorState)
             {
                 BackColor = Color.Red;
+                ForeColor = Color.Black;
             }
             ListViewItem.ListViewSubItem subItem = new ListViewItem.ListViewSubItem()
             {
@@ -99,7 +101,26 @@ namespace DataHoarder_DL
             if (URI.Contains("youtube.com/c")) return ScrapeType.YoutubeChannel;
             return ScrapeType.Unknown;
         }
-
+        private string ParseShortName(string URI, ScrapeType ScrapeType)
+        {
+            string Shortname = URI;
+            switch (ScrapeType)
+            {
+                case ScrapeType.Instagram:
+                    if(URI.EndsWith("/"))
+                        Shortname = Shortname.Remove(Shortname.Length - 1);
+                    Shortname = Shortname.Substring(Shortname.LastIndexOf('/') + 1);
+                    break;
+                case ScrapeType.TikTok:
+                    if (URI.EndsWith("/"))
+                        Shortname = Shortname.Remove(Shortname.Length - 1);
+                    Shortname = Shortname.Substring(Shortname.LastIndexOf('@') + 1);
+                    break;
+                default:
+                    break;
+            }
+            return Shortname;
+        }
         private void mainList_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (mainList.SelectedItems.Count != 1)
@@ -115,22 +136,107 @@ namespace DataHoarder_DL
             if (mainList.SelectedItems.Count > 1)
                 return;
             else if (mainList.SelectedItems.Count == 0)
-                return; //TODO create new item
+            {
+                string[] URIstoAdd = txtURI.Text.Split(Environment.NewLine);
+                foreach (string URItoAdd in URIstoAdd)
+                {
+                    ScrapeType scrapeType = ParseItemType(URItoAdd);
+                    //ensure it doesnt exist already
+                    UnifiedScrapeItem duplicateCheck = Globals.Settings.ScrapeItems.Find(x => (x.URI == URItoAdd) && (x.ScrapeType == scrapeType));
+                    if (duplicateCheck != null)
+                        continue; //TODO log duplicate warning
+                    if (scrapeType == ScrapeType.Unknown)
+                    {
+                        MessageBox.Show("Unknown type detected");
+                        //TODO, prompt for type
+                    }
+                    UnifiedScrapeItem newItem = new UnifiedScrapeItem()
+                    {
+                        FriendlyName = txtFriendlyName.Text,
+                        ScrapeType = scrapeType,
+                        URI = URItoAdd,
+                        ScrapeDaysMaximum = Convert.ToInt32(nudMaxDays.Value),
+                        MaxToScrape = Convert.ToInt32(nudMaxScrape.Value),
+                        ShortName = ParseShortName(URItoAdd, scrapeType)
+                    };
+                    Globals.Settings.ScrapeItems.Add(newItem);
+                    newItem.BuildDirectories();
+                }
+            }
             else
             {
                 UnifiedScrapeItem scrapeItem = Globals.Settings.ScrapeItems.Find(x => x.Id == Guid.Parse(mainList.SelectedItems[0].Tag.ToString()));
                 scrapeItem.URI = txtURI.Text;
                 scrapeItem.ScrapeDaysMaximum = Convert.ToInt32(nudMaxDays.Value);
                 scrapeItem.MaxToScrape = Convert.ToInt32(nudMaxScrape.Value);
-                Globals.Settings.Save();
             }
+            Globals.Settings.Save();
+            RefreshList();
         }
 
-        private void btnQuickScrape_Click(object sender, EventArgs e)
+        private async void btnQuickScrape_Click(object sender, EventArgs e)
         {
-            //TODO
-        }
+            if (mainList.SelectedItems.Count > 0)
+                return;
+            else
+            {
+                string[] URIstoAdd = txtURI.Text.Split(Environment.NewLine);
+                foreach (string URItoAdd in URIstoAdd)
+                {
+                    ScrapeType scrapeType = ParseItemType(URItoAdd);
+                    //ensure it doesnt exist already
+                    UnifiedScrapeItem duplicateCheck = Globals.Settings.ScrapeItems.Find(x => (x.URI == URItoAdd) && (x.ScrapeType == scrapeType));
+                    if (duplicateCheck != null)
+                        continue; //TODO log duplicate warning
+                    if (scrapeType == ScrapeType.Unknown)
+                    {
+                        MessageBox.Show("Unknown type detected");
+                        //TODO, prompt for type
+                    }
+                    UnifiedScrapeItem newItem = new UnifiedScrapeItem()
+                    {
+                        FriendlyName = "Single Download",
+                        ScrapeType = scrapeType,
+                        URI = URItoAdd,
+                        ScrapeDaysMaximum = Convert.ToInt32(nudMaxDays.Value),
+                        MaxToScrape = Convert.ToInt32(nudMaxScrape.Value),
+                        ShortName = ParseShortName(URItoAdd, scrapeType)
+                    };
+                    Globals.Settings.ScrapeItems.Add(newItem);
+                    newItem.BuildDirectories();
+                    UnifiedQueueItem queueItem = QueueItem(newItem);
+                    Globals.Settings.UnifiedQueue.Add(queueItem);
+                    scrapeController.ProcessQueue();
+                    Globals.Settings.UnifiedQueue.Remove(queueItem);
+                    Globals.Settings.ScrapeItems.Remove(newItem);
 
+                }
+            }
+            Globals.Settings.Save();
+            RefreshList();
+        }
+        private UnifiedQueueItem QueueItem(UnifiedScrapeItem ScrapeItem)
+        {
+            UnifiedQueueItem queueItem = new UnifiedQueueItem()
+            {
+                MaxToScrape = ScrapeItem.MaxToScrape,
+                ScrapeType = ScrapeItem.ScrapeType,
+                ItemId = ScrapeItem.Id
+            };
+            switch (ScrapeItem.ScrapeType)
+            {
+                case ScrapeType.Instagram:
+                    queueItem.URI = ScrapeItem.ShortName;
+                    break;
+                case ScrapeType.TikTok:
+                    queueItem.URI = ScrapeItem.ShortName;
+                    break;
+                default:
+                    queueItem.URI = ScrapeItem.URI;
+                    break;
+            }
+            return queueItem;
+        }
         private void btnQueueItems_Click(object sender, EventArgs e)
         {
             foreach(ListViewItem listItem in mainList.SelectedItems)
@@ -140,24 +246,19 @@ namespace DataHoarder_DL
                 //Ensure the item isnt already queued, if not, add it
                 if(Globals.Settings.UnifiedQueue.Find(x=> x.ItemId == scrapeItem.Id) == null)
                 {
-                    UnifiedQueueItem queueItem = new UnifiedQueueItem()
-                    {
-                        MaxToScrape = scrapeItem.MaxToScrape,
-                        ScrapeType = scrapeItem.ScrapeType,
-                        URI = scrapeItem.URI,
-                        ItemId = scrapeItem.Id
-                    };
-                    Globals.Settings.UnifiedQueue.Add(queueItem);
+
+                    Globals.Settings.UnifiedQueue.Add(QueueItem(scrapeItem));
                 }
             }
+            Globals.Settings.Save();
             RefreshList();
         }
 
         private async void runFullValidationToolStripMenuItem_Click(object sender, EventArgs e)
         {
             await Controllers.ValidationController.ValidateAllObjects();
-            RefreshList();
             Globals.Settings.Save();
+            RefreshList();
         }
 
         private void btnAutoQueue_Click(object sender, EventArgs e)
@@ -197,10 +298,70 @@ namespace DataHoarder_DL
             RefreshList();
         }
 
-        private void btnStartScraper_Click(object sender, EventArgs e)
+        private async void btnStartScraper_Click(object sender, EventArgs e)
         {
-            scrapeController.ProcessQueue();
+            await scrapeController.ProcessQueue();
             RefreshList();
+        }
+
+        private void btnRemove_Click(object sender, EventArgs e)
+        {
+            foreach(ListViewItem item in mainList.SelectedItems)
+            {
+                Globals.Settings.ScrapeItems.Remove(Globals.Settings.ScrapeItems.Find(x => x.Id == Guid.Parse(item.Tag.ToString())));
+            }
+            Globals.Settings.Save();
+            RefreshList();
+        }
+
+        private void UnifiedUI_Click(object sender, EventArgs e)
+        {
+            ClearSelection();
+        }
+        private void ClearSelection()
+        {
+            mainList.SelectedItems.Clear();
+            nudMaxDays.Value = 30;
+            txtURI.Text = "";
+            nudMaxScrape.Value = 0;
+        }
+
+        private void btnMultilineAdd_Click(object sender, EventArgs e)
+        {
+            txtURI.BringToFront();
+            if (txtURI.Multiline)
+            {
+                txtURI.Multiline = false;
+                txtURI.Height = 23;
+            }
+            else
+            {
+                txtURI.Multiline = true;
+                txtURI.Height = 230;
+            }
+        }
+
+        private void btnClearQueue_Click(object sender, EventArgs e)
+        {
+            Globals.Settings.UnifiedQueue.Clear();
+            Globals.Settings.Save();
+            RefreshList();
+        }
+
+        private async void validateSelectedToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            foreach (ListViewItem item in mainList.SelectedItems)
+            {
+                await Globals.Settings.ScrapeItems.Find(x => x.Id == Guid.Parse(item.Tag.ToString())).Validate();
+            }
+            Globals.Settings.Save();
+            RefreshList();
+        }
+
+        private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SettingsUI settings = new SettingsUI();
+            settings.ShowDialog();
         }
     }
 }

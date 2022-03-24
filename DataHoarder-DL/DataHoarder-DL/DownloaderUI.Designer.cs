@@ -3,7 +3,7 @@ namespace DataHoarder_DL
 {
     partial class DownloaderUI
     {
-        /// <summary>
+        /*/// <summary>
         ///  Required designer variable.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
@@ -750,7 +750,7 @@ namespace DataHoarder_DL
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.ColumnHeader columnHeader12;
         private System.Windows.Forms.Button btnTTValidateOnly;
-        private System.Windows.Forms.FolderBrowserDialog fbdDLDir;
+        private System.Windows.Forms.FolderBrowserDialog fbdDLDir;*/
     }
 }
 
