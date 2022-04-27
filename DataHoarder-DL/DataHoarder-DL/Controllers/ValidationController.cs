@@ -195,8 +195,8 @@ namespace DataHoarder_DL.Controllers
 
                     break;
             }
-            ScrapeItem.TotalSize = await GetDirectorySize(ScrapeItem.ItemPath);
-            ScrapeItem.NumFiles = await GetNumFiles(ScrapeItem.ItemPath);
+            ScrapeItem.TotalSize = await GetDirectorySize(ScrapeItem.ItemPath + "\\media");
+            ScrapeItem.NumFiles = await GetNumFiles(ScrapeItem.ItemPath + "\\media");
             Globals.Settings.Save();
             //ScrapeItem.LastValidated = DateTime.Now;
         }

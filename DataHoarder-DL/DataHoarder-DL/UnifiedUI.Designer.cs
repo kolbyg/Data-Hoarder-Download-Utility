@@ -44,6 +44,7 @@
             this.validationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.runFullValidationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.validateSelectedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.fileBrowserToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.btnClearQueue = new System.Windows.Forms.Button();
             this.btnQueueItems = new System.Windows.Forms.Button();
@@ -92,7 +93,7 @@
             this.mainList.GridLines = true;
             this.mainList.Location = new System.Drawing.Point(292, 27);
             this.mainList.Name = "mainList";
-            this.mainList.Size = new System.Drawing.Size(1336, 745);
+            this.mainList.Size = new System.Drawing.Size(1336, 611);
             this.mainList.TabIndex = 0;
             this.mainList.UseCompatibleStateImageBehavior = false;
             this.mainList.View = System.Windows.Forms.View.Details;
@@ -140,7 +141,8 @@
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
-            this.validationToolStripMenuItem});
+            this.validationToolStripMenuItem,
+            this.fileBrowserToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(1640, 24);
@@ -191,6 +193,13 @@
             this.validateSelectedToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
             this.validateSelectedToolStripMenuItem.Text = "Validate Selected";
             this.validateSelectedToolStripMenuItem.Click += new System.EventHandler(this.validateSelectedToolStripMenuItem_Click);
+            // 
+            // fileBrowserToolStripMenuItem
+            // 
+            this.fileBrowserToolStripMenuItem.Name = "fileBrowserToolStripMenuItem";
+            this.fileBrowserToolStripMenuItem.Size = new System.Drawing.Size(97, 20);
+            this.fileBrowserToolStripMenuItem.Text = "Media Browser";
+            this.fileBrowserToolStripMenuItem.Click += new System.EventHandler(this.fileBrowserToolStripMenuItem_Click);
             // 
             // groupBox1
             // 
@@ -296,9 +305,9 @@
             // rtbLogger
             // 
             this.rtbLogger.BackColor = System.Drawing.Color.DimGray;
-            this.rtbLogger.Location = new System.Drawing.Point(12, 545);
+            this.rtbLogger.Location = new System.Drawing.Point(292, 644);
             this.rtbLogger.Name = "rtbLogger";
-            this.rtbLogger.Size = new System.Drawing.Size(274, 227);
+            this.rtbLogger.Size = new System.Drawing.Size(1336, 128);
             this.rtbLogger.TabIndex = 4;
             this.rtbLogger.Text = "";
             // 
@@ -528,5 +537,6 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox txtFriendlyName;
         private System.Windows.Forms.ToolStripMenuItem validateSelectedToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem fileBrowserToolStripMenuItem;
     }
 }

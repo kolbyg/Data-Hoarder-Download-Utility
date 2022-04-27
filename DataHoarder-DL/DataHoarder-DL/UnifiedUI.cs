@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ByteSizeLib;
+using NLog;
 
 namespace DataHoarder_DL
 {
@@ -17,6 +18,7 @@ namespace DataHoarder_DL
         //TODO Multiline text
         //TODO Settings page
         //TODO rework logging
+        Logger logger = LogManager.GetCurrentClassLogger();
         Controllers.FormController formController;
         Controllers.ScrapeController scrapeController;
         public UnifiedUI(Controllers.FormController formController)
@@ -29,11 +31,12 @@ namespace DataHoarder_DL
         private void UnifiedUI_Load(object sender, EventArgs e)
         {
             NLog.Windows.Forms.RichTextBoxTarget.ReInitializeAllTextboxes(this);
+            ApplyNewLogLevel();
             LoadListView();
         }
         private void LoadListView()
         {
-            foreach(UnifiedScrapeItem scrapeItem in Globals.Settings.ScrapeItems)
+            foreach (UnifiedScrapeItem scrapeItem in Globals.Settings.ScrapeItems)
             {
                 ListViewItem listItem = new ListViewItem(scrapeItem.ScrapeType.ToString());
                 //Short Name
@@ -49,7 +52,7 @@ namespace DataHoarder_DL
                 //# Files
                 listItem.SubItems.Add(scrapeItem.NumFiles.ToString());
                 //File Size
-                listItem.SubItems.Add(Math.Round(ByteSize.FromBytes(scrapeItem.TotalSize).GigaBytes,2).ToString() + "GB");//TODO fix this, use GB
+                listItem.SubItems.Add(Math.Round(ByteSize.FromBytes(scrapeItem.TotalSize).GigaBytes, 2).ToString() + "GB");//TODO fix this, use GB
                 listItem.Tag = scrapeItem.Id;
                 listItem.UseItemStyleForSubItems = false;
                 mainList.Items.Add(listItem);
@@ -70,7 +73,7 @@ namespace DataHoarder_DL
         {
             Color BackColor = Color.Black;
             Color ForeColor = Color.Lime;
-            if(IsErrorState)
+            if (IsErrorState)
             {
                 BackColor = Color.Red;
                 ForeColor = Color.Black;
@@ -107,7 +110,7 @@ namespace DataHoarder_DL
             switch (ScrapeType)
             {
                 case ScrapeType.Instagram:
-                    if(URI.EndsWith("/"))
+                    if (URI.EndsWith("/"))
                         Shortname = Shortname.Remove(Shortname.Length - 1);
                     Shortname = Shortname.Substring(Shortname.LastIndexOf('/') + 1);
                     break;
@@ -129,6 +132,16 @@ namespace DataHoarder_DL
             txtURI.Text = scrapeItem.URI;
             nudMaxScrape.Value = scrapeItem.MaxToScrape;
             nudMaxDays.Value = scrapeItem.ScrapeDaysMaximum;
+            txtFriendlyName.Text = scrapeItem.FriendlyName;
+        }
+        private void ApplyNewLogLevel()
+        {
+            foreach (var rule in LogManager.Configuration.LoggingRules)
+            {
+                rule.SetLoggingLevels(LogLevel.FromString(Globals.Settings.LogLevel), LogLevel.Fatal);
+            }
+            LogManager.ReconfigExistingLoggers();
+            logger.Info("Logger has been reconfigured.");
         }
 
         private void btnSave_Click(object sender, EventArgs e)
@@ -147,7 +160,7 @@ namespace DataHoarder_DL
                         continue; //TODO log duplicate warning
                     if (scrapeType == ScrapeType.Unknown)
                     {
-                        MessageBox.Show("Unknown type detected");
+                       MessageBox.Show("Unknown type detected");
                         //TODO, prompt for type
                     }
                     UnifiedScrapeItem newItem = new UnifiedScrapeItem()
@@ -169,6 +182,7 @@ namespace DataHoarder_DL
                 scrapeItem.URI = txtURI.Text;
                 scrapeItem.ScrapeDaysMaximum = Convert.ToInt32(nudMaxDays.Value);
                 scrapeItem.MaxToScrape = Convert.ToInt32(nudMaxScrape.Value);
+                scrapeItem.FriendlyName = txtFriendlyName.Text;
             }
             Globals.Settings.Save();
             RefreshList();
@@ -190,7 +204,11 @@ namespace DataHoarder_DL
                         continue; //TODO log duplicate warning
                     if (scrapeType == ScrapeType.Unknown)
                     {
-                        MessageBox.Show("Unknown type detected");
+                        DialogResult confirmUnknown = MessageBox.Show("Unknown type detected, attempt to process with yt-dlp?", "Confirm", MessageBoxButtons.YesNo);
+                        if (confirmUnknown == DialogResult.Yes)
+                            scrapeType = ScrapeType.YoutubeVideo;
+                        else
+                            return;
                         //TODO, prompt for type
                     }
                     UnifiedScrapeItem newItem = new UnifiedScrapeItem()
@@ -239,12 +257,12 @@ namespace DataHoarder_DL
         }
         private void btnQueueItems_Click(object sender, EventArgs e)
         {
-            foreach(ListViewItem listItem in mainList.SelectedItems)
+            foreach (ListViewItem listItem in mainList.SelectedItems)
             {
                 //Get item by GUID in tag, store it locally
-                UnifiedScrapeItem scrapeItem = Globals.Settings.ScrapeItems.Find(x=> x.Id == Guid.Parse(listItem.Tag.ToString()));
+                UnifiedScrapeItem scrapeItem = Globals.Settings.ScrapeItems.Find(x => x.Id == Guid.Parse(listItem.Tag.ToString()));
                 //Ensure the item isnt already queued, if not, add it
-                if(Globals.Settings.UnifiedQueue.Find(x=> x.ItemId == scrapeItem.Id) == null)
+                if (Globals.Settings.UnifiedQueue.Find(x => x.ItemId == scrapeItem.Id) == null)
                 {
 
                     Globals.Settings.UnifiedQueue.Add(QueueItem(scrapeItem));
@@ -263,9 +281,9 @@ namespace DataHoarder_DL
 
         private void btnAutoQueue_Click(object sender, EventArgs e)
         {
-            foreach(UnifiedScrapeItem scrapeItem in Globals.Settings.ScrapeItems)
+            foreach (UnifiedScrapeItem scrapeItem in Globals.Settings.ScrapeItems)
             {
-                if(IsScrapingDue(scrapeItem))
+                if (IsScrapingDue(scrapeItem))
                 {
                     UnifiedQueueItem queueItem = new UnifiedQueueItem()
                     {
@@ -306,7 +324,7 @@ namespace DataHoarder_DL
 
         private void btnRemove_Click(object sender, EventArgs e)
         {
-            foreach(ListViewItem item in mainList.SelectedItems)
+            foreach (ListViewItem item in mainList.SelectedItems)
             {
                 Globals.Settings.ScrapeItems.Remove(Globals.Settings.ScrapeItems.Find(x => x.Id == Guid.Parse(item.Tag.ToString())));
             }
@@ -362,6 +380,12 @@ namespace DataHoarder_DL
         {
             SettingsUI settings = new SettingsUI();
             settings.ShowDialog();
+        }
+
+        private void fileBrowserToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            BrowserUI browser = new BrowserUI();
+            browser.ShowDialog();
         }
     }
 }

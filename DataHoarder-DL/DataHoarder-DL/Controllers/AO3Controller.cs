@@ -41,7 +41,7 @@ namespace DataHoarder_DL.Controllers
         }
         private List<string> ParseURI(string URI)
         {
-            List<string> URIs = new List<string>;
+            List<string> URIs = new List<string>();
             if (URI.Contains("archiveofourown.org/works")) {
                 URIs.Add(URI);
             }
@@ -51,8 +51,9 @@ namespace DataHoarder_DL.Controllers
         private string[] GetWorkIDList(string URI)
         {
 
-            string scrapeCommand = BuildScrapeCommand(username, CachePath, MaxItemsToScrape);
-            InvokeTTScraper(scrapeCommand);
+            //string scrapeCommand = BuildScrapeCommand(username, CachePath, MaxItemsToScrape);
+            //InvokeTTScraper(scrapeCommand);
+            return null;
         }
         public async Task<bool> FetchData(UnifiedQueueItem QueueItem)
         {
